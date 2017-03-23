@@ -1,0 +1,7 @@
+{
+  "name": "turbocms/turbocms",
+  "description": "Matt's modernish CMS",
+  "require": {
+    "php": "^7.0"
+  }
+}
