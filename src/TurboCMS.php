@@ -75,9 +75,11 @@ class TurboCMS extends App
         define("APP_NAME", $this->micrositeSelected);
         define("SITE_ROOT", APP_ROOT . "/sites/" . $this->micrositeSelected);
         $this->addViewPath(SITE_ROOT . "/Views");
-        foreach(new \DirectoryIterator(SITE_ROOT . "/Routes") as $file) {
-            if(!$file->isDot() && $file->getExtension() == 'php') {
-                $this->addRoutePath($file->getRealPath());
+        if(file_exists(SITE_ROOT . "/Routes")) {
+            foreach (new \DirectoryIterator(SITE_ROOT . "/Routes") as $file) {
+                if (!$file->isDot() && $file->getExtension() == 'php') {
+                    $this->addRoutePath($file->getRealPath());
+                }
             }
         }
     }
