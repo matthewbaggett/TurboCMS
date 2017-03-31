@@ -20,6 +20,7 @@ class TurboCMS extends App
                 $this->addRoutePath($file->getRealPath());
             }
         }
+        $this->addViewPath(TURBO_ROOT . "/src/Views");
     }
 
     protected function setUp()
@@ -61,7 +62,11 @@ class TurboCMS extends App
         }
     }
 
-    protected function setUp_initialiseMicrosite(){
+    protected function setUp_initialiseMicrosite()
+    {
         define("APP_NAME", $this->micrositeSelected);
+        define("SITE_ROOT", APP_ROOT . "/sites/" . $this->micrositeSelected);
+        $this->addViewPath(SITE_ROOT . "/Views");
+
     }
 }

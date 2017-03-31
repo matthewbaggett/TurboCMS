@@ -10,6 +10,7 @@ use Segura\AppCore\App;
 use Segura\AppCore\Exceptions\TableGatewayRecordNotFoundException;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use Slim\Views\Twig;
 
 class PageController extends Controller{
     public function getPage(Request $request, Response $response, $args){
@@ -18,7 +19,15 @@ class PageController extends Controller{
         try {
             $page = $pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
             $blocks = $page->fetchBlockObjects(BlocksModel::FIELD_ORDER, 'ASC');
-            \Kint::dump($blocks);
+
+            /** @var Twig $twig */
+            $twig = App::Container()->get("view");
+
+            return $twig->render($response, 'Pages/Default.html.twig', [
+                'page_name' => $page->getTitle(),
+                'blocks' => $blocks,
+            ]);
+
         }catch (TableGatewayRecordNotFoundException $tgrnfe){
             return $response->withStatus(404);
         }
