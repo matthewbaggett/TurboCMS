@@ -11,7 +11,8 @@ use Slim\Http\Response;
 class AssetController extends Controller{
     public function getAsset(Request $request, Response $response, $args){
         $assetPath = SITE_ROOT . "/Assets/" . $args['path'];
-      if(realpath($assetPath) === $assetPath && file_exists($assetPath)){
+
+        if(realpath($assetPath) === $assetPath && file_exists($assetPath)){
           $response = $response->withBody(new Body(fopen('php://temp', 'r+')));
           $response->getBody()->write(file_get_contents($assetPath));
 
