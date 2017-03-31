@@ -15,6 +15,11 @@ class TurboCMS extends App
     {
         $this->setUp();
         parent::__construct();
+        foreach(new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
+            if(!$file->isDot() && !$file->getExtension() == 'php') {
+                $this->addRoutePath($file->getRealPath());
+            }
+        }
     }
 
     protected function setUp()
@@ -40,7 +45,11 @@ class TurboCMS extends App
 
     protected function setUp_determineMicrosite()
     {
-        $serverName = $_SERVER['SERVER_NAME'];
+        if(php_sapi_name() == 'cli'){
+            $serverName = 'default';
+        }else {
+            $serverName = $_SERVER['SERVER_NAME'];
+        }
         foreach ($this->siteConfigs as $site => $config) {
             if (in_array($serverName, $config['domains'])) {
                 $this->micrositeSelected = $site;
@@ -48,10 +57,10 @@ class TurboCMS extends App
             }
         }
         if ($this->micrositeSelected === false) {
-            die("No microsite configured for domain {$serverName}.");
+            die("No microsite configured for domain \"{$serverName}\".\n\n");
         }
-
     }
+
     protected function setUp_initialiseMicrosite(){
         define("APP_NAME", $this->micrositeSelected);
     }
