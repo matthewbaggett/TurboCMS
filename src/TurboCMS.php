@@ -16,7 +16,7 @@ class TurboCMS extends App
         $this->setUp();
         parent::__construct();
         foreach(new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
-            if(!$file->isDot() && !$file->getExtension() == 'php') {
+            if(!$file->isDot() && $file->getExtension() == 'php') {
                 $this->addRoutePath($file->getRealPath());
             }
         }
