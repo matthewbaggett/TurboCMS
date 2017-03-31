@@ -3,6 +3,7 @@
 namespace TurboCMS;
 
 use \Segura\AppCore\App;
+use Slim\Views\Twig;
 use Symfony\Component\Yaml\Yaml;
 
 class TurboCMS extends App
@@ -21,6 +22,13 @@ class TurboCMS extends App
             }
         }
         $this->addViewPath(TURBO_ROOT . "/src/Views");
+        /** @var Twig $twig */
+        $twig = $this->getContainer()->get("view");
+        if(isset($this->micrositeConfig['constants']) && count($this->micrositeConfig['constants']) > 0) {
+            foreach ($this->micrositeConfig['constants'] as $constant => $value) {
+                $twig->offsetSet($constant, $value);
+            }
+        }
     }
 
     protected function setUp()
