@@ -3,8 +3,10 @@
 namespace TurboCMS;
 
 use \Segura\AppCore\App;
+use \Segura\Session\Session;
 use Slim\Views\Twig;
 use Symfony\Component\Yaml\Yaml;
+use Slim;
 
 class TurboCMS extends App
 {
@@ -29,6 +31,14 @@ class TurboCMS extends App
                 $twig->offsetSet($constant, $value);
             }
         }
+
+        $this->container[Session::class] = function (Slim\Container $container) {
+            return Session::start($container->get('Redis'));
+        };
+
+        $session = $this->getContainer()->get(Session::class);
+        exit;
+
     }
 
     protected function setUp()
