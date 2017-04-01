@@ -37,7 +37,6 @@ class TurboCMS extends App
         };
 
         $session = $this->getContainer()->get(Session::class);
-        exit;
 
     }
 
