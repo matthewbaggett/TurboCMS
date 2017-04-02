@@ -2,6 +2,8 @@
 
 namespace TurboCMS;
 
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 use \Segura\AppCore\App;
 use \Segura\Session\Session;
 use Slim\Views\Twig;
@@ -38,6 +40,15 @@ class TurboCMS extends App
 
         $session = $this->getContainer()->get(Session::class);
 
+        $this->container['Storage'] = function(Slim\Container $container)
+        {
+            $storagePath = SITE_ROOT . "/Storage";
+            if(!file_exists($storagePath)) {
+                mkdir($storagePath, 0777, true);
+            }
+            $localAdaptor = new Local($storagePath);
+            return new Filesystem($localAdaptor);
+        };
     }
 
     protected function setUp()
@@ -91,5 +102,6 @@ class TurboCMS extends App
                 }
             }
         }
+
     }
 }
