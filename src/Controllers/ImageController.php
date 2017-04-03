@@ -2,6 +2,9 @@
 
 namespace TurboCMS\Controllers;
 
+use Intervention\Image\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\ImageManagerStatic;
 use League\Flysystem\Filesystem;
 use Pekkis\MimeTypes\MimeTypes;
 use Segura\AppCore\Abstracts\Controller;
@@ -17,8 +20,8 @@ class ImageController extends Controller{
         /** @var Filesystem $filesystem */
         $filesystem = App::Container()->get("Storage");
 
-        $fileData = $filesystem->read($args['path']);
 
+        $image = ImageManagerStatic::make(SITE_ROOT . "/Storage/" . $args['path']);
         switch($args['size']){
             case 'thumb':
                 $width = 250;
@@ -27,6 +30,15 @@ class ImageController extends Controller{
             default:
                 break;
         }
+
+        $image->resize($width, $height);
+        $resizedPath = SITE_ROOT . "/Storage/Resize/" . $size . $args['path'];
+        if(!file_exists(dirname($resizedPath))){
+            mkdir(dirname($resizedPath), 0777, true);
+        }
+        $image->save($resizedPath);
+
+        die(":D");
 
 
     }

@@ -4,7 +4,7 @@
   "require": {
     "php": "^7.0",
     "segura/appcore": "^0.1.23",
-    "intervention/image": "^2.3.11",
+    "intervention/image": "^2.0.0",
     "pekkis/mime-types": "^1.0",
     "league/flysystem": "^1.0"
   },
