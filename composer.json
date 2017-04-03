@@ -2,7 +2,11 @@
   "name": "turbocms/turbocms",
   "description": "Matt's modernish CMS",
   "require": {
-    "php": "^7.0"
+    "php": "^7.0",
+    "segura/appcore": "dev-master",
+    "intervention/image": "^2.3.11",
+    "pekkis/mime-types": "^1.0",
+    "league/flysystem": "^1.0"
   },
   "autoload": {
     "psr-4": {
