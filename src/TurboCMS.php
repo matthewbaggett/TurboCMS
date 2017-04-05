@@ -49,6 +49,16 @@ class TurboCMS extends App
             $localAdaptor = new Local($storagePath);
             return new Filesystem($localAdaptor);
         };
+
+        $this->container['TempStorage'] = function(Slim\Container $container)
+        {
+            $storagePath = APP_ROOT . "/tmp";
+            if(!file_exists($storagePath)) {
+                mkdir($storagePath, 0777, true);
+            }
+            $localAdaptor = new Local($storagePath);
+            return new Filesystem($localAdaptor);
+        };
     }
 
     protected function setUp()
