@@ -8,6 +8,9 @@
     "pekkis/mime-types": "^1.0",
     "league/flysystem": "^1.0"
   },
+  "bin": [
+    "bin/data-importer"
+  ],
   "autoload": {
     "psr-4": {
       "TurboCMS\\": "src/"
