@@ -44,8 +44,10 @@ class AutoImporter{
 
             if(!$alreadyApplied) {
 
-                $importCommand = "mysql -u {$connection['username']} -h {$connection['hostname']} -p{$connection['password']} {$connection['database']} < {$sqlFile}";
+                $importCommand = "mysql -u {$connection['username']} -h {$connection['hostname']} -p{$connection['password']} {$connection['database']} < {$sqlFile}  2>&1 | grep -v \"Warning: Using a password\"";
+                ob_start();
                 exec($importCommand);
+                ob_end_clean();
                 $update = $this->updaterService->getNewModelInstance();
                 $update
                     ->setFile($sqlFile)
