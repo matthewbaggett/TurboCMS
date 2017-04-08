@@ -2,7 +2,6 @@
 
 namespace TurboCMS\Data;
 
-use MicroSites\Models\UpdaterModel;
 use MicroSites\Services\UpdaterService;
 use Segura\AppCore\App;
 use TurboCMS\TurboCMS;
@@ -59,8 +58,28 @@ class AutoImporter{
         }
     }
 
+    public function waitForMySQL()
+    {
+        $connection = TurboCMS::Container()->get("DatabaseConfig")['Default'];
+
+        $ready = false;
+        echo "Waiting for MySQL to come up...";
+        while ($ready == false) {
+            $conn = @fsockopen($connection['hostname'], $connection['port']);
+            if(is_resource($conn)){
+                fclose($conn);
+                $ready = true;
+            }else{
+                echo ".";
+                usleep(500000);
+            }
+        }
+        echo " [DONE]\n";
+    }
+
     public function run(){
         $generalSqlDirPath = TURBO_ROOT . "/src/SQL/";
+        $this->waitForMySQL();
         $sqlFiles = array_values($this->scanForSql($generalSqlDirPath));
 
         echo "Checking for base SQL to run:\n";
