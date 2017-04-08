@@ -30,7 +30,7 @@ ALTER TABLE `usersSites`
 
 ALTER TABLE `pageTypeSites`
   ADD FOREIGN KEY (`pageTypeId`)
-REFERENCES `pages`(`id`)
+REFERENCES `pageTypes`(`id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
@@ -42,7 +42,7 @@ REFERENCES `sites`(`id`)
 
 ALTER TABLE `blockTypeSites`
   ADD FOREIGN KEY (`blockTypeId`)
-REFERENCES `blocks`(`id`)
+REFERENCES `blockTypes`(`id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
@@ -55,5 +55,11 @@ REFERENCES `sites`(`id`)
 ALTER TABLE `pages`
   ADD FOREIGN KEY (`pageTypeId`)
 REFERENCES `pageTypes` (`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `blocks`
+  ADD FOREIGN KEY (`blockTypeId`)
+REFERENCES `blockTypes`(`id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;

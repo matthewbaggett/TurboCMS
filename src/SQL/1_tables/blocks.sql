@@ -4,12 +4,12 @@ CREATE TABLE `blocks` (
   `siteId` int(11) NOT NULL,
   `pageId` int(11) NOT NULL,
   `order` int(11) NOT NULL,
-  `type` int(11) NOT NULL,
+  `blockTypeId` int(11) NOT NULL,
   `data` TEXT NULL,
   `deleted` ENUM('Yes','No') DEFAULT 'No',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `siteId` (`siteId`),
   KEY `pageId` (`pageId`),
-  KEY `type` (`type`)
+  KEY `blockTypeId` (`blockTypeId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
