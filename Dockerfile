@@ -4,12 +4,12 @@ RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
-        libpng12-dev
+        libpng12-dev \
         git \
         unzip \
         mysql-client \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/lib/x86_64-linux-gnu/ \
-    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql iconv mcrypt \
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql iconv mcrypt zip \
     && rm -r /var/lib/apt/lists/* \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 COPY . /app
