@@ -3,5 +3,5 @@
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-$fetcher = new \TurboCMS\Mail\Fetch();
+$fetcher = new \TurboCMS\Mail\MailFetch(\TurboCMS\TurboCMS::Container()->get(\MicroSites\Services\MailAccountService::class));
 $fetcher->run();

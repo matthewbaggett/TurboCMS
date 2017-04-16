@@ -1,0 +1,7 @@
+CREATE TABLE mailContacts
+(
+  id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  uuid VARCHAR(36) NOT NULL,
+  name TEXT,
+  email TEXT
+);

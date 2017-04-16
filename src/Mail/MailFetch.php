@@ -8,20 +8,25 @@ use MicroSites\Services\UpdaterService;
 use Segura\AppCore\App;
 use TurboCMS\TurboCMS;
 
-class Fetch
+class MailFetch
 {
 
     protected $mailAccountService;
 
-    public function __construct(
-        MailAccountService $mailAccountService
-    )
+    public function __construct(MailAccountService $mailAccountService)
     {
         $this->mailAccountService = $mailAccountService;
     }
-    public function run()
+
+    /**
+     * @param MailAccountModel[]|null $mailAccounts
+     */
+    public function run(array $mailAccounts = null)
     {
-        foreach($this->mailAccountService->getAll() as $mailAccount){
+        if(!$mailAccounts){
+            $mailAccounts = $this->mailAccountService->getAll();
+        }
+        foreach($mailAccounts as $mailAccount){
             /** @var $mailAccount MailAccountModel */
             $mailAccount->connect();
         }

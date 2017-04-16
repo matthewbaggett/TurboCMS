@@ -4,12 +4,16 @@ namespace TurboCMS;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use MicroSites\Services\Base\BaseMailAccountService;
+use MicroSites\Services\MailAccountService;
+use MicroSites\Services\MailMessageService;
 use Monolog\Logger;
 use \Segura\AppCore\App;
 use \Segura\Session\Session;
 use Slim\Views\Twig;
 use Symfony\Component\Yaml\Yaml;
 use Slim;
+use TurboCMS\Mail\MailFetch;
 
 class TurboCMS extends App
 {
@@ -59,6 +63,10 @@ class TurboCMS extends App
             }
             $localAdaptor = new Local($storagePath);
             return new Filesystem($localAdaptor);
+        };
+
+        $this->container[MailFetch::class] = function(Slim\Container $container){
+            return new MailFetch($container->get(MailAccountService::class));
         };
     }
 

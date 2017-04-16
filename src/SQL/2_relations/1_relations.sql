@@ -92,3 +92,15 @@ ALTER TABLE `mailAccount`
 REFERENCES `users`(`id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
+
+ALTER TABLE `mailAccount`
+  ADD FOREIGN KEY (`mailServerId`)
+REFERENCES `mailServers` (`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `mailMessage`
+  ADD FOREIGN KEY (`contactId`)
+REFERENCES `mailContacts` (`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;

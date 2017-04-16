@@ -3,8 +3,10 @@
 namespace TurboCMS\Data;
 
 use MicroSites\Services\UpdaterService;
+use MicroSites\Services\UsersService;
 use Segura\AppCore\App;
 use TurboCMS\TurboCMS;
+use Zend\Db\Adapter\Driver\Pdo\Result;
 
 class AutoImporter{
 
@@ -96,6 +98,27 @@ class AutoImporter{
                 $this->applyScripts($sqlDirListing);
             }
             echo "\n";
+        }
+    }
+
+    public function purge(){
+        /** @var UsersService $usersService */
+        $usersService = App::Container()->get(UsersService::class);
+        $sqlDoer = $usersService->getNewTableGatewayInstance()->getAdapter()->driver->getConnection();
+        /** @var Result $tables */
+        $tablesResult = $sqlDoer->execute("SHOW TABLES");
+        $tables = [];
+        while($row = $tablesResult->next()){
+            $tables[] = reset($row);
+        }
+        foreach($tables as $table){
+            $sql = [];
+            $sql[] = 'SET FOREIGN_KEY_CHECKS = 0';
+            $sql[] = "DROP TABLES `{$table}`";
+            $sql[] = 'SET FOREIGN_KEY_CHECKS = 1';
+            $sql = implode(";\n", $sql);
+            echo " > Dropping {$table}\n";
+            $sqlDoer->execute($sql);
         }
     }
 }
