@@ -6,10 +6,13 @@
     "segura/appcore": "^0.1.23",
     "imagine/imagine": "^0.6.3",
     "pekkis/mime-types": "^1.0",
-    "league/flysystem": "^1.0"
+    "league/flysystem": "^1.0",
+    "nette/mail": "^2.4.0",
+    "tedivm/fetch": "^0.7.0"
   },
   "bin": [
-    "bin/data-importer"
+    "bin/data-importer",
+    "bin/mail-fetch"
   ],
   "autoload": {
     "psr-4": {
