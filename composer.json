@@ -1,6 +1,6 @@
 {
   "name": "turbocms/turbocms",
-  "description": "Matt's modernish CMS",
+  "description": "Matt's Modernish CMS",
   "require": {
     "php": "^7.0",
     "segura/appcore": "^0.1.23",
