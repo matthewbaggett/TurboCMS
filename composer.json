@@ -12,6 +12,8 @@
   },
   "bin": [
     "bin/data-importer",
+    "bin/data-purge",
+    "bin/data-rebuild",
     "bin/mail-fetch"
   ],
   "autoload": {
