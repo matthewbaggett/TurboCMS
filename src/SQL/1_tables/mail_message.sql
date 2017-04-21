@@ -6,7 +6,7 @@ CREATE TABLE mailMessage
   mailAccountId INT(11) NOT NULL,
   contactId INT(11) NOT NULL,
   subject TEXT NOT NULL,
-  message TEXT NOT NULL,
+  message BLOB NOT NULL,
   dateReceived DATETIME NOT NULL,
   dateRead DATETIME,
   `read` ENUM('Unread', 'Read') DEFAULT 'Unread' NOT NULL
