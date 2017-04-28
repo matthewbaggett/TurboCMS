@@ -2,38 +2,36 @@
 
 namespace TurboCMS;
 
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-use MicroSites\Services\Base\BaseMailAccountService;
-use MicroSites\Services\MailAccountService;
-use MicroSites\Services\MailMessageService;
-use Monolog\Logger;
 use \Segura\AppCore\App;
 use \Segura\Session\Session;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
+use MicroSites\Services\MailAccountService;
+use Monolog\Logger;
+use Slim;
 use Slim\Views\Twig;
 use Symfony\Component\Yaml\Yaml;
-use Slim;
 use TurboCMS\Mail\MailFetch;
 
 class TurboCMS extends App
 {
-    private $siteConfigs = [];
+    private $siteConfigs       = [];
     private $micrositeSelected = false;
-    private $micrositeConfig = false;
+    private $micrositeConfig   = false;
 
     public function __construct()
     {
         $this->setUp();
         parent::__construct();
-        foreach(new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
-            if(!$file->isDot() && $file->getExtension() == 'php') {
+        foreach (new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
+            if (!$file->isDot() && $file->getExtension() == 'php') {
                 $this->addRoutePath($file->getRealPath());
             }
         }
         $this->addViewPath(TURBO_ROOT . "/src/Views");
         /** @var Twig $twig */
         $twig = $this->getContainer()->get("view");
-        if(isset($this->micrositeConfig['constants']) && count($this->micrositeConfig['constants']) > 0) {
+        if (isset($this->micrositeConfig['constants']) && count($this->micrositeConfig['constants']) > 0) {
             foreach ($this->micrositeConfig['constants'] as $constant => $value) {
                 $twig->offsetSet($constant, $value);
             }
@@ -43,31 +41,31 @@ class TurboCMS extends App
             return Session::start($container->get('Redis'));
         };
 
-        $session = $this->getContainer()->get(Session::class);
-
-        $this->container['Storage'] = function(Slim\Container $container)
-        {
+        $this->container['Storage'] = function (Slim\Container $container) {
             $storagePath = SITE_ROOT . "/Storage";
-            if(!file_exists($storagePath)) {
+            if (!file_exists($storagePath)) {
                 mkdir($storagePath, 0777, true);
             }
             $localAdaptor = new Local($storagePath);
             return new Filesystem($localAdaptor);
         };
 
-        $this->container['TempStorage'] = function(Slim\Container $container)
-        {
+        $this->container['TempStorage'] = function (Slim\Container $container) {
             $storagePath = APP_ROOT . "/tmp";
-            if(!file_exists($storagePath)) {
+            if (!file_exists($storagePath)) {
                 mkdir($storagePath, 0777, true);
             }
             $localAdaptor = new Local($storagePath);
             return new Filesystem($localAdaptor);
         };
 
-        $this->container[MailFetch::class] = function(Slim\Container $container){
+        $this->container[MailFetch::class] = function (Slim\Container $container) {
             return new MailFetch($container->get(MailAccountService::class));
         };
+
+        if (php_sapi_name() != 'cli') {
+            $session = $this->getContainer()->get(Session::class);
+        }
     }
 
     protected function setUp()
@@ -80,28 +78,28 @@ class TurboCMS extends App
     protected function setUp_parseMicrosites()
     {
         $configsToParse = [];
-        foreach(new \DirectoryIterator(APP_ROOT . "/sites") as $site){
-            if($site->isDir() && file_exists($site->getRealPath() . "/config.yml")){
+        foreach (new \DirectoryIterator(APP_ROOT . "/sites") as $site) {
+            if ($site->isDir() && file_exists($site->getRealPath() . "/config.yml")) {
                 $configsToParse[$site->getFilename()] = $site->getRealPath() . "/config.yml";
             }
         }
 
-        foreach($configsToParse as $site => $configPath){
+        foreach ($configsToParse as $site => $configPath) {
             $this->siteConfigs[$site] = Yaml::parse(file_get_contents($configPath));
         }
     }
 
     protected function setUp_determineMicrosite()
     {
-        if(php_sapi_name() == 'cli'){
+        if (php_sapi_name() == 'cli') {
             $serverName = 'default';
-        }else {
+        } else {
             $serverName = $_SERVER['SERVER_NAME'];
         }
         foreach ($this->siteConfigs as $site => $config) {
             if (in_array($serverName, $config['domains'])) {
                 $this->micrositeSelected = $site;
-                $this->micrositeConfig = $config;
+                $this->micrositeConfig   = $config;
             }
         }
         if ($this->micrositeSelected === false && php_sapi_name() != 'cli') {
@@ -111,17 +109,20 @@ class TurboCMS extends App
 
     protected function setUp_initialiseMicrosite()
     {
-        define("APP_NAME", $this->micrositeSelected);
-        define("SITE_ROOT", APP_ROOT . "/sites/" . $this->micrositeSelected);
+        if (!defined("APP_NAME")) {
+            define("APP_NAME", $this->micrositeSelected);
+        }
+        if (!defined("SITE_ROOT")) {
+            define("SITE_ROOT", APP_ROOT . "/sites/" . $this->micrositeSelected);
+        }
         $this->addViewPath(SITE_ROOT . "/Views");
-        if(file_exists(SITE_ROOT . "/Routes")) {
+        if (file_exists(SITE_ROOT . "/Routes")) {
             foreach (new \DirectoryIterator(SITE_ROOT . "/Routes") as $file) {
                 if (!$file->isDot() && $file->getExtension() == 'php') {
                     $this->addRoutePath($file->getRealPath());
                 }
             }
         }
-
     }
 
     /**
@@ -134,6 +135,7 @@ class TurboCMS extends App
 
     /**
      * @param bool $doNotUseStaticInstance
+     *
      * @return TurboCMS
      */
     public static function Instance($doNotUseStaticInstance = false)
@@ -143,6 +145,7 @@ class TurboCMS extends App
 
     /**
      * @param \Interop\Container\ContainerInterface $container
+     *
      * @return TurboCMS
      */
     public function setContainer(\Interop\Container\ContainerInterface $container): TurboCMS
@@ -161,6 +164,7 @@ class TurboCMS extends App
 
     /**
      * @param Logger $monolog
+     *
      * @return TurboCMS
      */
     public function setMonolog(Logger $monolog): TurboCMS
@@ -179,6 +183,7 @@ class TurboCMS extends App
 
     /**
      * @param array $siteConfigs
+     *
      * @return TurboCMS
      */
     public function setSiteConfigs(array $siteConfigs): TurboCMS
@@ -197,6 +202,7 @@ class TurboCMS extends App
 
     /**
      * @param bool $micrositeSelected
+     *
      * @return TurboCMS
      */
     public function setMicrositeSelected(bool $micrositeSelected): TurboCMS
@@ -215,6 +221,7 @@ class TurboCMS extends App
 
     /**
      * @param bool $micrositeConfig
+     *
      * @return TurboCMS
      */
     public function setMicrositeConfig(bool $micrositeConfig): TurboCMS
