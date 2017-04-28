@@ -2,6 +2,7 @@
 
 namespace TurboCMS\Controllers;
 
+use Imagine\Image;
 use Imagine\Gd\Imagine;
 use League\Flysystem\Filesystem;
 use Pekkis\MimeTypes\MimeTypes;
@@ -20,7 +21,7 @@ class ImageController extends Controller
         $tempFilePath = APP_ROOT . "/tmp/" . $tempName;
         $resizedPath  = SITE_ROOT . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
 
-        if (!file_exists($resizedPath)) {
+        if (!file_exists($resizedPath) || true) {
             ini_set("memory_limit", "512M");
 
             /** @var Filesystem $filesystem */
@@ -35,10 +36,15 @@ class ImageController extends Controller
 
             switch ($args['size']) {
                 case 'thumb':
-                    $size = new \Imagine\Image\Box(250, 250);
-                    $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
+                    $size = new Image\Box(250, 250);
+                    $mode = Image\ImageInterface::THUMBNAIL_INSET;
                     break;
                 default:
+                    if(count(explode("x", $args['size'],2)) == 2){
+                        $sizeBits = explode("x",$args['size'],2);
+                        $size = new Image\Box($sizeBits[0],$sizeBits[1]);
+                        $mode = Image\ImageInterface::THUMBNAIL_INSET;
+                    }
                     break;
             }
 
