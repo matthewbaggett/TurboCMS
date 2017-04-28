@@ -3,27 +3,24 @@
 namespace TurboCMS\Controllers;
 
 use Imagine\Gd\Imagine;
-use Intervention\Image\Image;
-use Intervention\Image\ImageManager;
-use Intervention\Image\ImageManagerStatic;
 use League\Flysystem\Filesystem;
 use Pekkis\MimeTypes\MimeTypes;
 use Segura\AppCore\Abstracts\Controller;
 use Segura\AppCore\App;
-use Slim\Http\Body;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class ImageController extends Controller{
+class ImageController extends Controller
+{
     public function getImage(Request $request, Response $response, $args)
     {
-        $extension = explode(".", $args['path']);
-        $extension = end($extension);
-        $tempName = rand(1000, 9999) . ".{$extension}";
+        $extension    = explode(".", $args['path']);
+        $extension    = end($extension);
+        $tempName     = rand(1000, 9999) . ".{$extension}";
         $tempFilePath = APP_ROOT . "/tmp/" . $tempName;
-        $resizedPath = SITE_ROOT . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
+        $resizedPath  = SITE_ROOT . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
 
-        if(!file_exists($resizedPath)){
+        if (!file_exists($resizedPath)) {
             ini_set("memory_limit", "512M");
 
             /** @var Filesystem $filesystem */
@@ -34,7 +31,7 @@ class ImageController extends Controller{
             $tempFileSystem->writeStream($tempName, $filesystem->readStream($args['path']));
 
             $imagine = new Imagine();
-            $image = $imagine->open($tempFilePath);
+            $image   = $imagine->open($tempFilePath);
 
             switch ($args['size']) {
                 case 'thumb':
@@ -56,12 +53,11 @@ class ImageController extends Controller{
             $image->save($resizedPath);
             unlink($tempFilePath);
         }
-        $mimetyper = new MimeTypes();
+        $mimetyper   = new MimeTypes();
         $contentType = $mimetyper->extensionToMimeType($extension);
 
         $response->getBody()->write(file_get_contents($resizedPath));
         $response = $response->withHeader("Content-type", $contentType);
         return $response;
-
     }
 }

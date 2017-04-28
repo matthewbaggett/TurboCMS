@@ -17,4 +17,3 @@
             ->setCallback(\TurboCMS\Controllers\ImageController::class . ":getImage")
             ->setName("Get a image resized")
     );
-

@@ -12,12 +12,14 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
 
-class PageController extends Controller{
-    public function getPage(Request $request, Response $response, $args){
+class PageController extends Controller
+{
+    public function getPage(Request $request, Response $response, $args)
+    {
         /** @var PagesService $pageService */
         $pageService = App::Container()->get(PagesService::class);
         try {
-            $page = $pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
+            $page   = $pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
             $blocks = $page->fetchBlockObjects(BlocksModel::FIELD_ORDER, 'ASC');
 
             /** @var Twig $twig */
@@ -25,12 +27,10 @@ class PageController extends Controller{
 
             return $twig->render($response, 'Pages/Default.html.twig', [
                 'page_name' => $page->getTitle(),
-                'blocks' => $blocks,
+                'blocks'    => $blocks,
             ]);
-
-        }catch (TableGatewayRecordNotFoundException $tgrnfe){
+        } catch (TableGatewayRecordNotFoundException $tgrnfe) {
             return $response->withStatus(404);
         }
-
     }
 }

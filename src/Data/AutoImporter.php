@@ -8,7 +8,8 @@ use Segura\AppCore\App;
 use TurboCMS\TurboCMS;
 use Zend\Db\Adapter\Driver\Pdo\Result;
 
-class AutoImporter{
+class AutoImporter
+{
 
     /** @var UpdaterService */
     private $updaterService;
@@ -18,13 +19,14 @@ class AutoImporter{
         $this->updaterService = App::Container()->get(UpdaterService::class);
     }
 
-    public function scanForSql($path){
+    public function scanForSql($path)
+    {
         $results = [];
-        foreach(new \DirectoryIterator($path) as $file){
-            if(!$file->isDot()) {
-                if($file->isDir()){
+        foreach (new \DirectoryIterator($path) as $file) {
+            if (!$file->isDot()) {
+                if ($file->isDir()) {
                     $results = array_merge($results, $this->scanForSql($file->getRealPath()));
-                }elseif($file->getExtension() == 'sql'){
+                } elseif ($file->getExtension() == 'sql') {
                     $results[$file->getRealPath()] = $file->getRealPath();
                 }
             }
@@ -33,19 +35,19 @@ class AutoImporter{
         return $results;
     }
 
-    public function applyScripts($sqlFiles){
+    public function applyScripts($sqlFiles)
+    {
         $connection = TurboCMS::Container()->get("DatabaseConfig")['Default'];
 
-        foreach($sqlFiles as $sqlFile){
+        foreach ($sqlFiles as $sqlFile) {
             echo " > Running {$sqlFile}...";
             try {
                 $alreadyApplied = $this->updaterService->updateAlreadyApplied($sqlFile);
-            }catch(\Exception $exception){
+            } catch (\Exception $exception) {
                 $alreadyApplied = false;
             }
 
-            if(!$alreadyApplied) {
-
+            if (!$alreadyApplied) {
                 $importCommand = "mysql -u {$connection['username']} -h {$connection['hostname']} -p{$connection['password']} {$connection['database']} < {$sqlFile}  2>&1 | grep -v \"Warning: Using a password\"";
                 ob_start();
                 exec($importCommand);
@@ -56,7 +58,7 @@ class AutoImporter{
                     ->setDateApplied(date("Y-m-d H:i:s"))
                     ->save();
                 echo " [DONE]\n";
-            }else{
+            } else {
                 echo " [SKIPPED]\n";
             }
         }
@@ -70,10 +72,10 @@ class AutoImporter{
         echo "Waiting for MySQL to come up...";
         while ($ready == false) {
             $conn = @fsockopen($connection['hostname'], $connection['port']);
-            if(is_resource($conn)){
+            if (is_resource($conn)) {
                 fclose($conn);
                 $ready = true;
-            }else{
+            } else {
                 echo ".";
                 usleep(500000);
             }
@@ -81,7 +83,8 @@ class AutoImporter{
         echo " [DONE]\n";
     }
 
-    public function run(){
+    public function run()
+    {
         $generalSqlDirPath = TURBO_ROOT . "/src/SQL/";
         $this->waitForMySQL();
         $sqlFiles = array_values($this->scanForSql($generalSqlDirPath));
@@ -90,10 +93,10 @@ class AutoImporter{
         $this->applyScripts($sqlFiles);
         echo "Complete.\n\n";
 
-        foreach(TurboCMS::Instance()->getSiteConfigs() as $site => $config){
+        foreach (TurboCMS::Instance()->getSiteConfigs() as $site => $config) {
             $sqlDirPath = APP_ROOT . "/sites/{$site}/SQL";
             echo "Checking for SQL to import: {$site}\n";
-            if(file_exists($sqlDirPath) && is_dir($sqlDirPath)){
+            if (file_exists($sqlDirPath) && is_dir($sqlDirPath)) {
                 $sqlDirListing = array_values($this->scanForSql($sqlDirPath));
                 $this->applyScripts($sqlDirListing);
             }
@@ -101,22 +104,23 @@ class AutoImporter{
         }
     }
 
-    public function purge(){
+    public function purge()
+    {
         /** @var UsersService $usersService */
         $usersService = App::Container()->get(UsersService::class);
-        $sqlDoer = $usersService->getNewTableGatewayInstance()->getAdapter()->driver->getConnection();
+        $sqlDoer      = $usersService->getNewTableGatewayInstance()->getAdapter()->driver->getConnection();
         /** @var Result $tables */
         $tablesResult = $sqlDoer->execute("SHOW TABLES");
-        $tables = [];
-        while($row = $tablesResult->next()){
+        $tables       = [];
+        while ($row = $tablesResult->next()) {
             $tables[] = reset($row);
         }
-        foreach($tables as $table){
-            $sql = [];
+        foreach ($tables as $table) {
+            $sql   = [];
             $sql[] = 'SET FOREIGN_KEY_CHECKS = 0';
             $sql[] = "DROP TABLES `{$table}`";
             $sql[] = 'SET FOREIGN_KEY_CHECKS = 1';
-            $sql = implode(";\n", $sql);
+            $sql   = implode(";\n", $sql);
             echo " > Dropping {$table}\n";
             $sqlDoer->execute($sql);
         }

@@ -1,8 +1,8 @@
 <?php
 define("TURBO_ROOT", __DIR__);
-if(php_sapi_name() == 'cli'){
+if (php_sapi_name() == 'cli') {
     define("PUBLIC_ROOT", __DIR__ . "/../../../public");
-}else {
+} else {
     define("PUBLIC_ROOT", dirname($_SERVER['SCRIPT_FILENAME']));
 }
 define("APP_ROOT", realpath(PUBLIC_ROOT . "/../"));
@@ -12,4 +12,3 @@ require_once(APP_ROOT . "/vendor/autoload.php");
 $micrositesApp = \TurboCMS\TurboCMS::Instance()
     ->loadAllRoutes()
     ->getApp();
-
