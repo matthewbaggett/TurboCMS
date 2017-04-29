@@ -4,6 +4,12 @@ ALTER TABLE `blocks`
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
+ALTER TABLE `blockMetas`
+  ADD FOREIGN KEY (`blockId`)
+  REFERENCES `blocks`(`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
 ALTER TABLE `pages`
   ADD FOREIGN KEY (`siteId`)
   REFERENCES `sites`(`id`)

@@ -8,7 +8,9 @@
     "pekkis/mime-types": "^1.0",
     "league/flysystem": "^1.0",
     "nette/mail": "^2.4.0",
-    "tedivm/fetch": "^0.7.0"
+    "tedivm/fetch": "^0.7.0",
+    "miljar/php-exif": "^0.6.3",
+    "phpexiftool/exiftool": "^10.16"
   },
   "bin": [
     "bin/data-importer",
