@@ -2,8 +2,8 @@
 
 namespace TurboCMS\Controllers;
 
-use Imagine\Image;
 use Imagine\Gd\Imagine;
+use Imagine\Image;
 use League\Flysystem\Filesystem;
 use Pekkis\MimeTypes\MimeTypes;
 use Segura\AppCore\Abstracts\Controller;
@@ -40,10 +40,10 @@ class ImageController extends Controller
                     $mode = Image\ImageInterface::THUMBNAIL_INSET;
                     break;
                 default:
-                    if(count(explode("x", $args['size'],2)) == 2){
-                        $sizeBits = explode("x",$args['size'],2);
-                        $size = new Image\Box($sizeBits[0],$sizeBits[1]);
-                        $mode = Image\ImageInterface::THUMBNAIL_INSET;
+                    if (count(explode("x", $args['size'], 2)) == 2) {
+                        $sizeBits = explode("x", $args['size'], 2);
+                        $size     = new Image\Box($sizeBits[0], $sizeBits[1]);
+                        $mode     = Image\ImageInterface::THUMBNAIL_INSET;
                     }
                     break;
             }

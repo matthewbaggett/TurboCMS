@@ -5,5 +5,6 @@ REPLACE INTO `users` (`id`, `uuid`, `email`, `firstName`, `lastName`, `password`
   (NULL, UUID(), 'matthew@baggett.me', 'Matthew', 'Baggett', '$2y$10$1iTYvkHrvtDGvjJgyaGwfuxyzvmgKjYIPzBXV7bbOWbbM/i7m/z1O');
 
 REPLACE INTO `usersSites` (`userId`, `siteId`) VALUES
-  ((SELECT id FROM users where email='test@microsites.dev'),-1),
-  ((SELECT id FROM users where email='matthew@baggett.me'),-1);
+  ((SELECT id FROM users WHERE email='test@microsites.dev'),(SELECT id FROM sites WHERE siteName = 'default')),
+  ((SELECT id FROM users WHERE email='matthew@baggett.me'),(SELECT id FROM sites WHERE siteName = 'default')),
+  ((SELECT id FROM users WHERE email='matthew@baggett.me'),(SELECT id FROM sites WHERE siteName = 'admin'));

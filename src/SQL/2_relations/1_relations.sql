@@ -16,11 +16,11 @@ ALTER TABLE `blocks`
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
--- ALTER TABLE `usersSites`
---   ADD FOREIGN KEY (`siteId`)
--- REFERENCES `sites`(`id`)
---   ON DELETE RESTRICT
---   ON UPDATE RESTRICT;
+ALTER TABLE `usersSites`
+   ADD FOREIGN KEY (`siteId`)
+ REFERENCES `sites`(`id`)
+   ON DELETE RESTRICT
+   ON UPDATE RESTRICT;
 
 ALTER TABLE `usersSites`
   ADD FOREIGN KEY (`userId`)
