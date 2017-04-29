@@ -50,6 +50,8 @@ class ImageController extends Controller
 
             if ($size && $mode) {
                 $image = $image->thumbnail($size, $mode);
+            }else{
+                die("Cannot display image with invalid resize properties.");
             }
 
 
