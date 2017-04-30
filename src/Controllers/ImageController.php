@@ -16,7 +16,8 @@ use Slim\Http\Response;
 
 class ImageController extends Controller
 {
-    public function getCustomerStorageService(SitesModel $site){
+    public function getCustomerStorageService(SitesModel $site)
+    {
         $storagePath = APP_ROOT . "/sites/{$site->getSiteName()}/Storage";
         if (!file_exists($storagePath)) {
             mkdir($storagePath, 0777, true);
@@ -33,13 +34,13 @@ class ImageController extends Controller
         $tempFilePath = APP_ROOT . "/tmp/" . $tempName;
         $resizedPath  = SITE_ROOT . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
 
-        if(isset($args['site'])){
+        if (isset($args['site'])) {
             /** @var SitesService $sitesService */
             $sitesService = App::Container()->get(SitesService::class);
-            $site = $sitesService->getByField(SitesModel::FIELD_SITENAME, $args['site']);
+            $site         = $sitesService->getByField(SitesModel::FIELD_SITENAME, $args['site']);
             /** @var Filesystem $filesystem */
             $filesystem = $this->getCustomerStorageService($site);
-        }else{
+        } else {
             /** @var Filesystem $filesystem */
             $filesystem = App::Container()->get("Storage");
         }

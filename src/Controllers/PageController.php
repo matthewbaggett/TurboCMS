@@ -2,7 +2,6 @@
 
 namespace TurboCMS\Controllers;
 
-use MicroSites\Models\BlocksModel;
 use MicroSites\Models\PagesModel;
 use MicroSites\Services\PagesService;
 use Segura\AppCore\Abstracts\Controller;
