@@ -1,0 +1,8 @@
+{% if block.getDataElements.Image %}
+    <img
+        src="/image/800x533/{{ block.getDataElements.Image.File }}"
+        {% if block.getDataElements.AltText %}
+            alt="{{ block.getDataElements.AltText }}"
+        {% endif %}
+        />
+{% endif %}

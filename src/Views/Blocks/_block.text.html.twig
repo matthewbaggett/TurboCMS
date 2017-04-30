@@ -1,2 +1,6 @@
-<h2>Heading</h2>
-<p>Paragraphs.</p>
+{% if block.getDataElements.Title %}
+    <h2>{{ block.getDataElements.Title }}</h2>
+{% endif %}
+{% for paragraph in block.getDataElements.Paragraphs %}
+    <p>{{ paragraph }}</p>
+{% endfor %}

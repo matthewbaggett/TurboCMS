@@ -23,7 +23,9 @@ class PageController extends Controller
             if ($page->getStatus() != PagesModel::STATUS_PUBLISHED) {
                 return $response->withStatus(404);
             }
-            $blocks = $page->fetchRenderableBlockObjects(BlocksModel::FIELD_ORDER, 'ASC');
+            $blocks = $page->fetchRenderableBlockObjects();
+
+
 
             /** @var Twig $twig */
             $twig = App::Container()->get("view");

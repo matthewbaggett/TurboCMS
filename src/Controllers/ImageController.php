@@ -4,7 +4,10 @@ namespace TurboCMS\Controllers;
 
 use Imagine\Gd\Imagine;
 use Imagine\Image;
+use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use MicroSites\Models\SitesModel;
+use MicroSites\Services\SitesService;
 use Pekkis\MimeTypes\MimeTypes;
 use Segura\AppCore\Abstracts\Controller;
 use Segura\AppCore\App;
@@ -13,6 +16,15 @@ use Slim\Http\Response;
 
 class ImageController extends Controller
 {
+    public function getCustomerStorageService(SitesModel $site){
+        $storagePath = APP_ROOT . "/sites/{$site->getSiteName()}/Storage";
+        if (!file_exists($storagePath)) {
+            mkdir($storagePath, 0777, true);
+        }
+        $localAdaptor = new Local($storagePath);
+        return new Filesystem($localAdaptor);
+    }
+
     public function getImage(Request $request, Response $response, $args)
     {
         $extension    = explode(".", $args['path']);
@@ -21,11 +33,21 @@ class ImageController extends Controller
         $tempFilePath = APP_ROOT . "/tmp/" . $tempName;
         $resizedPath  = SITE_ROOT . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
 
+        if(isset($args['site'])){
+            /** @var SitesService $sitesService */
+            $sitesService = App::Container()->get(SitesService::class);
+            $site = $sitesService->getByField(SitesModel::FIELD_SITENAME, $args['site']);
+            /** @var Filesystem $filesystem */
+            $filesystem = $this->getCustomerStorageService($site);
+        }else{
+            /** @var Filesystem $filesystem */
+            $filesystem = App::Container()->get("Storage");
+        }
+
         if (!file_exists($resizedPath) || true) {
             ini_set("memory_limit", "512M");
 
-            /** @var Filesystem $filesystem */
-            $filesystem = App::Container()->get("Storage");
+
             /** @var Filesystem $tempFileSystem */
             $tempFileSystem = App::Container()->get("TempStorage");
 
@@ -48,7 +70,7 @@ class ImageController extends Controller
                     break;
             }
 
-            if ($size && $mode) {
+            if (isset($size) && isset($mode)) {
                 $image = $image->thumbnail($size, $mode);
             } else {
                 die("Cannot display image with invalid resize properties.");
