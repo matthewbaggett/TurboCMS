@@ -3,7 +3,7 @@
   "description": "Matt's Modernish CMS",
   "require": {
     "php": "^7.0",
-    "segura/appcore": "^0.1.23",
+    "segura/appcore": "dev-master",
     "imagine/imagine": "^0.6.3",
     "pekkis/mime-types": "^1.0",
     "league/flysystem": "^1.0",
