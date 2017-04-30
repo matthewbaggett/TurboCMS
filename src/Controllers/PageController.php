@@ -20,7 +20,10 @@ class PageController extends Controller
         $pageService = App::Container()->get(PagesService::class);
         try {
             $page   = $pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
-            $blocks = $page->fetchBlockObjects(BlocksModel::FIELD_ORDER, 'ASC');
+            if ($page->getStatus() != PagesModel::STATUS_PUBLISHED) {
+                return $response->withStatus(404);
+            }
+            $blocks = $page->fetchRenderableBlockObjects(BlocksModel::FIELD_ORDER, 'ASC');
 
             /** @var Twig $twig */
             $twig = App::Container()->get("view");
