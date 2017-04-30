@@ -7,6 +7,7 @@ CREATE TABLE `eventLog` (
   `data` TEXT NULL,
   `dateCreated` DATETIME NOT NULL,
   `deleted` ENUM('Yes','No') DEFAULT 'No',
+  `read` ENUM('Yes','No') DEFAULT 'No',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `siteId` (`siteId`),
