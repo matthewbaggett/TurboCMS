@@ -74,7 +74,6 @@ class TurboCMS extends App
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
         }
-
     }
 
     protected function setUp()
