@@ -4,8 +4,8 @@ namespace TurboCMS\Controllers;
 
 use Imagine\Gd\Imagine;
 use Imagine\Image;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use MicroSites\Admin\Services\CustomerService;
 use MicroSites\Models\SitesModel;
 use MicroSites\Services\SitesService;
 use Pekkis\MimeTypes\MimeTypes;
@@ -16,15 +16,15 @@ use Slim\Http\Response;
 
 class ImageController extends Controller
 {
-    public function getCustomerStorageService(SitesModel $site)
+
+    /** @var CustomerService */
+    protected $customerService;
+
+    public function __construct()
     {
-        $storagePath = APP_ROOT . "/sites/{$site->getSiteName()}/Storage";
-        if (!file_exists($storagePath)) {
-            mkdir($storagePath, 0777, true);
-        }
-        $localAdaptor = new Local($storagePath);
-        return new Filesystem($localAdaptor);
+        $this->customerService = App::Container()->get(CustomerService::class);
     }
+
 
     public function getImage(Request $request, Response $response, $args)
     {
@@ -39,7 +39,7 @@ class ImageController extends Controller
             $sitesService = App::Container()->get(SitesService::class);
             $site         = $sitesService->getByField(SitesModel::FIELD_SITENAME, $args['site']);
             /** @var Filesystem $filesystem */
-            $filesystem = $this->getCustomerStorageService($site);
+            $filesystem = $this->customerService->getCustomerStorageService($site);
         } else {
             /** @var Filesystem $filesystem */
             $filesystem = App::Container()->get("Storage");
