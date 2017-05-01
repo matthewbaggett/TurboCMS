@@ -63,9 +63,18 @@ class TurboCMS extends App
             return new MailFetch($container->get(MailAccountService::class));
         };
 
+        foreach (new \DirectoryIterator(APP_ROOT . "/sites") as $site) {
+            if ($site->isDir()) {
+                if (file_exists($site->getRealPath() . "/AppContainer.php")) {
+                    require($site->getRealPath() . "/AppContainer.php");
+                }
+            }
+        }
+
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
         }
+
     }
 
     protected function setUp()
