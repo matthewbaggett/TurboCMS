@@ -78,12 +78,12 @@ class TurboCMS extends App
 
     protected function setUp()
     {
-        $this->setUp_parseMicrosites();
+        $this->setUp_parseMicroSites();
         $this->setUp_determineMicrosite();
         $this->setUp_initialiseMicrosite();
     }
 
-    protected function setUp_parseMicrosites()
+    protected function setUp_parseMicroSites()
     {
         $configsToParse = [];
         foreach (new \DirectoryIterator(APP_ROOT . "/sites") as $site) {
