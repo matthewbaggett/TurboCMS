@@ -26,8 +26,9 @@ class PageController extends Controller
         }
     }
 
-    public function renderPage(PagesModel $page, Response $response){
-        if ($page->getStatus() != PagesModel::STATUS_PUBLISHED || strtotime($page->getPublishedDate()) > time()) {
+    public function renderPage(PagesModel $page, Response $response)
+    {
+        if (!$page->isPublished()) {
             return $response->withStatus(404);
         }
         $blocks = $page->fetchRenderableBlockObjects();
