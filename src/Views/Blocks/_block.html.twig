@@ -1,3 +1,3 @@
-<div class="block {{ block.type }}">
-    {% include "Blocks/_block." ~ block.fetchBlockTypeObject.getName|lower ~ ".html.twig" ignore missing %}
+<div class="block {{ block.fetchBlockTypeObject.getName }}">
+    {% include "Blocks/_block." ~ block.fetchBlockTypeObject.getName|lower|replace({" ":""}) ~ ".html.twig" %}
 </div>
