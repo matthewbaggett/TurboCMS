@@ -23,9 +23,9 @@ class PublicController extends Controller
     public function __construct()
     {
         /** @var Twig $twig */
-        $this->twig = App::Container()->get("view");
+        $this->twig         = App::Container()->get("view");
         $this->pagesService = App::Container()->get(PagesService::class);
         $this->sitesService = App::Container()->get(SitesService::class);
-        $this->site = $this->sitesService->getByField(SitesModel::FIELD_SITENAME, APP_NAME);
+        $this->site         = $this->sitesService->getByField(SitesModel::FIELD_SITENAME, APP_NAME);
     }
 }
