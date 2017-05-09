@@ -5,7 +5,7 @@ CREATE TABLE `blocks` (
   `pageId` int(11) NOT NULL,
   `order` int(11) NOT NULL,
   `blockTypeId` int(11) NOT NULL,
-  `data` TEXT NULL,
+  `data` JSON NULL,
   `deleted` ENUM('Yes','No') DEFAULT 'No',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),

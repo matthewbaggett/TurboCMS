@@ -72,7 +72,8 @@ REFERENCES `blockTypes`(`id`)
 
 ALTER TABLE `mailServers`
   ADD FOREIGN KEY (`siteId`)
-REFERENCES `sites`(`id`) ON DELETE RESTRICT
+REFERENCES `sites`(`id`)
+  ON DELETE RESTRICT
   ON UPDATE RESTRICT;
 
 ALTER TABLE `mailServers`
@@ -120,5 +121,11 @@ REFERENCES `sites`(`id`)
 ALTER TABLE `eventLog`
   ADD FOREIGN KEY (`userId`)
 REFERENCES `users`(`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `pageTypes`
+  ADD FOREIGN KEY (`siteId`)
+REFERENCES `sites`(`id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
