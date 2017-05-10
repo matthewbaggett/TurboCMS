@@ -3,13 +3,19 @@
 namespace TurboCMS\Controllers;
 
 use MicroSites\Models\PagesModel;
+use MicroSites\Models\SitesModel;
+use MicroSites\Models\UsersModel;
 use MicroSites\Services\PagesService;
+use MicroSites\Services\UsersService;
 use Segura\AppCore\Abstracts\Controller;
 use Segura\AppCore\App;
+use Segura\AppCore\Exceptions\TableGatewayException;
 use Segura\AppCore\Exceptions\TableGatewayRecordNotFoundException;
+use Segura\Session\Session;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
+use TurboCMS\TurboCMS;
 
 class PageController extends Controller
 {
@@ -28,7 +34,25 @@ class PageController extends Controller
 
     public function renderPage(PagesModel $page, Response $response)
     {
-        if (!$page->isPublished()) {
+        $userId = Session::get(UsersModel::FIELD_ID);
+        $isSiteOwner = false;
+        if($userId){
+            try {
+                $usersService = TurboCMS::Container()->get(UsersService::class);
+                /** @var UsersModel $user */
+                $user = $usersService->getById($userId);
+                $site = $page->fetchSiteObject();
+                foreach($user->getSites() as $availableSite){
+                    /** @var $availableSite SitesModel */
+                    if($availableSite->getId() == $site->getId()){
+                        $isSiteOwner = true;
+                    }
+                }
+            } catch (TableGatewayException $tableGatewayException) {
+            }
+
+        }
+        if (!$page->isPublished() && !$isSiteOwner) {
             return $response->withStatus(404);
         }
         $blocks = $page->fetchRenderableBlockObjects();
