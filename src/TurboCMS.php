@@ -99,10 +99,17 @@ class TurboCMS extends App
 
     protected function setUp_determineMicrosite()
     {
+
         if (php_sapi_name() == 'cli') {
             $serverName = 'default';
+        } else if (defined("TURBOCMS_DEMO_SERVER_NAME")){
+            $serverName = TURBOCMS_DEMO_SERVER_NAME;
         } else {
-            $serverName = $_SERVER['SERVER_NAME'];
+            if(isset($_SERVER['HTTP_HOST'])){
+                $serverName = $_SERVER['HTTP_HOST'];
+            }else {
+                $serverName = $_SERVER['SERVER_NAME'];
+            }
         }
         foreach ($this->siteConfigs as $site => $config) {
             if (in_array($serverName, $config['domains'])) {
