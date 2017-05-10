@@ -21,8 +21,9 @@ class TurboCMS extends App
 
     public function __construct()
     {
-        $this->setUp();
         parent::__construct();
+        $this->setUp();
+
         foreach (new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
             if (!$file->isDot() && $file->getExtension() == 'php') {
                 $this->addRoutePath($file->getRealPath());
@@ -42,7 +43,7 @@ class TurboCMS extends App
         };
 
         $this->container['Storage'] = function (Slim\Container $container) {
-            $storagePath = SITE_ROOT . "/Storage";
+            $storagePath = $this->getSiteRoot() . "/Storage";
             if (!file_exists($storagePath)) {
                 mkdir($storagePath, 0777, true);
             }
@@ -122,17 +123,21 @@ class TurboCMS extends App
         }
     }
 
+    public function getAppName()
+    {
+        return $this->micrositeSelected;
+    }
+
+    public function getSiteRoot()
+    {
+        return APP_ROOT . "/sites/" . $this->getAppName();
+    }
+
     protected function setUp_initialiseMicrosite()
     {
-        if (!defined("APP_NAME")) {
-            define("APP_NAME", $this->micrositeSelected);
-        }
-        if (!defined("SITE_ROOT")) {
-            define("SITE_ROOT", APP_ROOT . "/sites/" . $this->micrositeSelected);
-        }
-        $this->addViewPath(SITE_ROOT . "/Views");
-        if (file_exists(SITE_ROOT . "/Routes")) {
-            foreach (new \DirectoryIterator(SITE_ROOT . "/Routes") as $file) {
+        $this->addViewPath($this->getSiteRoot() . "/Views");
+        if (file_exists($this->getSiteRoot() . "/Routes")) {
+            foreach (new \DirectoryIterator($this->getSiteRoot() . "/Routes") as $file) {
                 if (!$file->isDot() && $file->getExtension() == 'php') {
                     $this->addRoutePath($file->getRealPath());
                 }
@@ -194,6 +199,11 @@ class TurboCMS extends App
     public function getSiteConfigs(): array
     {
         return $this->siteConfigs;
+    }
+
+    public function getSiteConfig($key): array
+    {
+        return isset($this->siteConfigs[$key]) ? $this->siteConfigs[$key] : false;
     }
 
     /**

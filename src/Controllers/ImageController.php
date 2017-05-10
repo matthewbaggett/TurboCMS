@@ -13,6 +13,7 @@ use Segura\AppCore\Abstracts\Controller;
 use Segura\AppCore\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use TurboCMS\TurboCMS;
 
 class ImageController extends Controller
 {
@@ -32,7 +33,13 @@ class ImageController extends Controller
         $extension    = end($extension);
         $tempName     = rand(1000, 9999) . ".{$extension}";
         $tempFilePath = APP_ROOT . "/tmp/" . $tempName;
-        $resizedPath  = SITE_ROOT . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
+        if(isset($args['site'])) {
+            $siteRoot = APP_ROOT . "/sites/" . $args['site'] . "/";
+        }else{
+            $siteRoot = TurboCMS::Instance()->getSiteRoot();
+        }
+
+        $resizedPath  = $siteRoot . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
 
         if (isset($args['site'])) {
             /** @var SitesService $sitesService */

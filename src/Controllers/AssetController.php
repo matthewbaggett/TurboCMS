@@ -7,12 +7,18 @@ use Segura\AppCore\Abstracts\Controller;
 use Slim\Http\Body;
 use Slim\Http\Request;
 use Slim\Http\Response;
+use TurboCMS\TurboCMS;
 
 class AssetController extends Controller
 {
     public function getAsset(Request $request, Response $response, $args)
     {
-        $assetPath = SITE_ROOT . "/Assets/" . $args['path'];
+
+        if(isset($args['site'])){
+            $assetPath =  APP_ROOT . "/sites/" . $args['site'] . "/Assets/" . $args['path'];
+        }else {
+            $assetPath = TurboCMS::Instance()->getSiteRoot() . "/Assets/" . $args['path'];
+        }
 
         if (realpath($assetPath) === $assetPath && file_exists($assetPath)) {
             $response = $response->withBody(new Body(fopen('php://temp', 'r+')));
