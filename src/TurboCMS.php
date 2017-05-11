@@ -101,13 +101,12 @@ class TurboCMS extends App
 
     protected function setUp_determineMicrosite()
     {
-
         if (php_sapi_name() == 'cli') {
             $serverName = 'default';
         } else {
-            if(isset($_SERVER['HTTP_HOST'])){
+            if (isset($_SERVER['HTTP_HOST'])) {
                 $serverName = $_SERVER['HTTP_HOST'];
-            }else {
+            } else {
                 $serverName = $_SERVER['SERVER_NAME'];
             }
         }

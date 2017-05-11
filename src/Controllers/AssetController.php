@@ -7,16 +7,14 @@ use Segura\AppCore\Abstracts\Controller;
 use Slim\Http\Body;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use TurboCMS\TurboCMS;
 
 class AssetController extends Controller
 {
     public function getAsset(Request $request, Response $response, $args)
     {
-
-        if(isset($args['site'])){
+        if (isset($args['site'])) {
             $assetPath =  APP_ROOT . "/sites/" . $args['site'] . "/Assets/" . $args['path'];
-        }else {
+        } else {
             $assetPath = SITE_ROOT . "/Assets/" . $args['path'];
         }
 

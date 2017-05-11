@@ -33,9 +33,9 @@ class ImageController extends Controller
         $extension    = end($extension);
         $tempName     = rand(1000, 9999) . ".{$extension}";
         $tempFilePath = APP_ROOT . "/tmp/" . $tempName;
-        if(isset($args['site'])) {
+        if (isset($args['site'])) {
             $siteRoot = APP_ROOT . "/sites/" . $args['site'] . "/";
-        }else{
+        } else {
             $siteRoot = TurboCMS::Instance()->getSiteRoot();
         }
 
