@@ -24,13 +24,16 @@ class PageController extends Controller
 
     public function __construct()
     {
-
         $this->pageService = App::Container()->get(PagesService::class);
     }
 
-    public function previewPage(Request $request, Response $response, $args){
+    public function previewPage(Request $request, Response $response, $args)
+    {
         try {
             $page = $this->pageService->getByField(PagesModel::FIELD_UUID, $args['page_uuid']);
+            if (!$this->canPreview($page)) {
+                return $response->withStatus(404);
+            }
             return $this->renderPage($page, $response);
         } catch (TableGatewayRecordNotFoundException $tgrnfe) {
             return $response->withStatus(404);
@@ -49,25 +52,7 @@ class PageController extends Controller
 
     public function renderPage(PagesModel $page, Response $response)
     {
-        $userId = Session::get(UsersModel::FIELD_ID);
-        $isSiteOwner = false;
-        if($userId){
-            try {
-                $usersService = TurboCMS::Container()->get(UsersService::class);
-                /** @var UsersModel $user */
-                $user = $usersService->getById($userId);
-                $site = $page->fetchSiteObject();
-                foreach($user->getSites() as $availableSite){
-                    /** @var $availableSite SitesModel */
-                    if($availableSite->getId() == $site->getId()){
-                        $isSiteOwner = true;
-                    }
-                }
-            } catch (TableGatewayException $tableGatewayException) {
-            }
-
-        }
-        if (!$page->isPublished() && !$isSiteOwner) {
+        if (!$page->isPublished() && !$this->canPreview($page)) {
             return $response->withStatus(404);
         }
         $blocks = $page->fetchRenderableBlockObjects();
@@ -80,5 +65,27 @@ class PageController extends Controller
             'page_name' => $page->getTitle(),
             'blocks'    => $blocks,
         ]);
+    }
+
+    protected function canPreview(PagesModel $page)
+    {
+        $userId      = Session::get(UsersModel::FIELD_ID);
+        $isSiteOwner = false;
+        if ($userId) {
+            try {
+                $usersService = TurboCMS::Container()->get(UsersService::class);
+                /** @var UsersModel $user */
+                $user = $usersService->getById($userId);
+                $site = $page->fetchSiteObject();
+                foreach ($user->getSites() as $availableSite) {
+                    /** @var $availableSite SitesModel */
+                    if ($availableSite->getId() == $site->getId()) {
+                        $isSiteOwner = true;
+                    }
+                }
+            } catch (TableGatewayException $tableGatewayException) {
+            }
+        }
+        return $isSiteOwner;
     }
 }
