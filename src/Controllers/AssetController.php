@@ -17,7 +17,7 @@ class AssetController extends Controller
         if(isset($args['site'])){
             $assetPath =  APP_ROOT . "/sites/" . $args['site'] . "/Assets/" . $args['path'];
         }else {
-            $assetPath = TurboCMS::Instance()->getSiteRoot() . "/Assets/" . $args['path'];
+            $assetPath = SITE_ROOT . "/Assets/" . $args['path'];
         }
 
         if (realpath($assetPath) === $assetPath && file_exists($assetPath)) {

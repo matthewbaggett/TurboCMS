@@ -21,8 +21,8 @@ class TurboCMS extends App
 
     public function __construct()
     {
-        parent::__construct();
         $this->setUp();
+        parent::__construct();
 
         foreach (new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
             if (!$file->isDot() && $file->getExtension() == 'php') {
@@ -43,7 +43,7 @@ class TurboCMS extends App
         };
 
         $this->container['Storage'] = function (Slim\Container $container) {
-            $storagePath = $this->getSiteRoot() . "/Storage";
+            $storagePath = SITE_ROOT . "/Storage";
             if (!file_exists($storagePath)) {
                 mkdir($storagePath, 0777, true);
             }
@@ -103,8 +103,6 @@ class TurboCMS extends App
 
         if (php_sapi_name() == 'cli') {
             $serverName = 'default';
-        } else if (defined("TURBOCMS_DEMO_SERVER_NAME")){
-            $serverName = TURBOCMS_DEMO_SERVER_NAME;
         } else {
             if(isset($_SERVER['HTTP_HOST'])){
                 $serverName = $_SERVER['HTTP_HOST'];
@@ -123,21 +121,17 @@ class TurboCMS extends App
         }
     }
 
-    public function getAppName()
-    {
-        return $this->micrositeSelected;
-    }
-
-    public function getSiteRoot()
-    {
-        return APP_ROOT . "/sites/" . $this->getAppName();
-    }
-
     protected function setUp_initialiseMicrosite()
     {
-        $this->addViewPath($this->getSiteRoot() . "/Views");
-        if (file_exists($this->getSiteRoot() . "/Routes")) {
-            foreach (new \DirectoryIterator($this->getSiteRoot() . "/Routes") as $file) {
+        if (!defined("APP_NAME")) {
+            define("APP_NAME", $this->micrositeSelected);
+        }
+        if (!defined("SITE_ROOT")) {
+            define("SITE_ROOT", APP_ROOT . "/sites/" . $this->micrositeSelected);
+        }
+        $this->addViewPath(SITE_ROOT . "/Views");
+        if (file_exists(SITE_ROOT . "/Routes")) {
+            foreach (new \DirectoryIterator(SITE_ROOT . "/Routes") as $file) {
                 if (!$file->isDot() && $file->getExtension() == 'php') {
                     $this->addRoutePath($file->getRealPath());
                 }
