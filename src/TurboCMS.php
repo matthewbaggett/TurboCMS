@@ -17,7 +17,8 @@ class TurboCMS extends App
 {
     private $siteConfigs       = [];
     private $micrositeSelected = false;
-    private $micrositeConfig   = false;
+    /** @var array  */
+    private $micrositeConfig   = [];
 
     public function __construct()
     {
@@ -198,6 +199,11 @@ class TurboCMS extends App
     public function getSiteConfig($key): array
     {
         return isset($this->siteConfigs[$key]) ? $this->siteConfigs[$key] : false;
+    }
+
+    public function getCurrentSiteConfig(): array
+    {
+        return $this->micrositeConfig;
     }
 
     /**
