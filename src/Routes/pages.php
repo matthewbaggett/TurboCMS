@@ -7,4 +7,11 @@
             ->setHttpMethod('GET')
             ->setCallback(\TurboCMS\Controllers\PageController::class . ":getPage")
             ->setName("Read a page")
+    )
+    ->addRoute(
+        \Segura\AppCore\Router\Route::Factory()
+            ->setRouterPattern("/preview/{page_uuid}")
+            ->setHttpMethod('GET')
+            ->setCallback(\TurboCMS\Controllers\PageController::class . ":previewPage")
+            ->setName("Preview a page")
     );

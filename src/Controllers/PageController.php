@@ -19,13 +19,28 @@ use TurboCMS\TurboCMS;
 
 class PageController extends Controller
 {
+    /** @var PagesService $pageService */
+    protected $pageService;
+
+    public function __construct()
+    {
+
+        $this->pageService = App::Container()->get(PagesService::class);
+    }
+
+    public function previewPage(Request $request, Response $response, $args){
+        try {
+            $page = $this->pageService->getByField(PagesModel::FIELD_UUID, $args['page_uuid']);
+            return $this->renderPage($page, $response);
+        } catch (TableGatewayRecordNotFoundException $tgrnfe) {
+            return $response->withStatus(404);
+        }
+    }
     public function getPage(Request $request, Response $response, $args)
     {
-        /** @var PagesService $pageService */
-        $pageService = App::Container()->get(PagesService::class);
         try {
             // @TODO: This will allow other sites to view the same page.. Whoops! Fixme!
-            $page   = $pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
+            $page = $this->pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
             return $this->renderPage($page, $response);
         } catch (TableGatewayRecordNotFoundException $tgrnfe) {
             return $response->withStatus(404);
@@ -60,7 +75,8 @@ class PageController extends Controller
         /** @var Twig $twig */
         $twig = App::Container()->get("view");
 
-        return $twig->render($response, 'Pages/Default.html.twig', [
+
+        return $twig->render($response, $page->getPageTypeId() ? $page->fetchPageTypeObject()->getTemplate() : 'Pages/Default.html.twig', [
             'page_name' => $page->getTitle(),
             'blocks'    => $blocks,
         ]);
