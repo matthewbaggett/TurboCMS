@@ -3,5 +3,5 @@
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-$autoImporter = new \TurboCMS\Data\AutoImporter();
+$autoImporter = new \Segura\AppCore\Services\AutoImporterService();
 $autoImporter->purge();
