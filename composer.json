@@ -14,9 +14,6 @@
     "phpexiftool/exiftool": "^10.16"
   },
   "bin": [
-    "bin/data-importer",
-    "bin/data-purge",
-    "bin/data-rebuild",
     "bin/mail-fetch"
   ],
   "autoload": {
