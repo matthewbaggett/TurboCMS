@@ -66,6 +66,9 @@ class TurboCMS extends App
             return new MailFetch($container->get(MailAccountService::class));
         };
 
+        $this->container->get(AutoImporterService::class)
+            ->addSqlPath(TURBO_ROOT . "/src/SQL");
+
         foreach (new \DirectoryIterator(APP_ROOT . "/sites") as $site) {
             if ($site->isDir()) {
                 if (file_exists($site->getRealPath() . "/AppContainer.php")) {
