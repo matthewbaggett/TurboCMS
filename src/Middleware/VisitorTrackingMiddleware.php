@@ -44,7 +44,7 @@ class VisitorTrackingMiddleware
         $requestPath = $request->getUri()->__toString();
 
         $userAgent = $request->hasHeader('HTTP_USER_AGENT') ? $request->getHeader('HTTP_USER_AGENT')[0] : null;
-        $language = $request->hasHeader('HTTP_ACCEPT_LANGUAGE') ? $request->getHeader('HTTP_ACCEPT_LANGUAGE')[0] : null;
+        $language  = $request->hasHeader('HTTP_ACCEPT_LANGUAGE') ? $request->getHeader('HTTP_ACCEPT_LANGUAGE')[0] : null;
         $ipAddress = $request->hasHeader('HTTP_X_FORWARDED_FOR') ? $request->getheader('HTTP_X_FORWARDED_FOR')[0] : null;
 
         $redis->incr("track:{$visitorUuid}:page_views");
