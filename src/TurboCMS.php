@@ -67,12 +67,6 @@ class TurboCMS extends App
             return new MailFetch($container->get(MailAccountService::class));
         };
 
-        $this->container['Cookies'] = function (Slim\Container $container){
-            /** @var Slim\Http\Request $request */
-            $request = $container->get("request");
-            return new Slim\Http\Cookies($request->getCookieParams());
-        };
-
         $this->container->get(AutoImporterService::class)
             ->addSqlPath(TURBO_ROOT . "/src/SQL");
 
