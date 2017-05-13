@@ -36,7 +36,7 @@ class ImageController extends Controller
         if (isset($args['site'])) {
             $siteRoot = APP_ROOT . "/sites/" . $args['site'] . "/";
         } else {
-            $siteRoot = TurboCMS::Instance()->getSiteRoot();
+            $siteRoot = SITE_ROOT . "/";
         }
 
         $resizedPath  = $siteRoot . "/Storage/Resize/" . $args['size'] . "/" . $args['path'];
@@ -69,11 +69,20 @@ class ImageController extends Controller
                     $size = new Image\Box(250, 250);
                     $mode = Image\ImageInterface::THUMBNAIL_INSET;
                     break;
+                case 'fill':
+                    $size = $image->getSize();
+                    $mode = Image\ImageInterface::THUMBNAIL_INSET;
+                    break;
                 default:
                     if (count(explode("x", $args['size'], 2)) == 2) {
-                        $sizeBits = explode("x", $args['size'], 2);
+                        $sizeBits = explode("x", $args['size'], 3);
                         $size     = new Image\Box($sizeBits[0], $sizeBits[1]);
-                        $mode     = Image\ImageInterface::THUMBNAIL_INSET;
+
+                        if(isset($sizeBits[2]) && $sizeBits[2] == 'fill') {
+                            $mode = Image\ImageInterface::THUMBNAIL_OUTBOUND;
+                        }else{
+                            $mode = Image\ImageInterface::THUMBNAIL_INSET;
+                        }
                     }
                     break;
             }
