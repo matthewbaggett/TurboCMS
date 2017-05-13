@@ -34,6 +34,7 @@ class PageController extends Controller
             if (!$this->canPreview($page)) {
                 return $response->withStatus(404);
             }
+            $this->pageService->trackView($page);
             return $this->renderPage($page, $response);
         } catch (TableGatewayRecordNotFoundException $tgrnfe) {
             return $response->withStatus(404);
@@ -44,6 +45,7 @@ class PageController extends Controller
         try {
             // @TODO: This will allow other sites to view the same page.. Whoops! Fixme!
             $page = $this->pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
+            $this->pageService->trackView($page);
             return $this->renderPage($page, $response);
         } catch (TableGatewayRecordNotFoundException $tgrnfe) {
             return $response->withStatus(404);
@@ -62,6 +64,7 @@ class PageController extends Controller
 
 
         return $twig->render($response, $page->getPageTypeId() ? $page->fetchPageTypeObject()->getTemplate() : 'Pages/Default.html.twig', [
+            'site'      => $page->fetchSiteObject(),
             'page_name' => $page->getTitle(),
             'blocks'    => $blocks,
         ]);
