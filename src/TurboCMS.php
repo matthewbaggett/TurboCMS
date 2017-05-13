@@ -14,6 +14,7 @@ use Slim\Views\Twig;
 use Symfony\Component\Yaml\Yaml;
 use TurboCMS\Mail\MailFetch;
 use TurboCMS\Middleware\VisitorTrackingMiddleware;
+use TurboCMS\Services\GeoIPLookup;
 
 class TurboCMS extends App
 {
@@ -67,6 +68,10 @@ class TurboCMS extends App
             return new MailFetch($container->get(MailAccountService::class));
         };
 
+        $this->container[GeoIPLookup::class] = function (Slim\Container $container) {
+            return new GeoIPLookup();
+        };
+
         $this->container->get(AutoImporterService::class)
             ->addSqlPath(TURBO_ROOT . "/src/SQL");
 
@@ -87,7 +92,6 @@ class TurboCMS extends App
         }
 
         $this->app->add(new VisitorTrackingMiddleware());
-
     }
 
     protected function setUp()
@@ -210,6 +214,11 @@ class TurboCMS extends App
     public function getSiteConfig($key): array
     {
         return isset($this->siteConfigs[$key]) ? $this->siteConfigs[$key] : false;
+    }
+
+    public function getCurrentSiteName(): string
+    {
+        return $this->micrositeSelected;
     }
 
     public function getCurrentSiteConfig(): array

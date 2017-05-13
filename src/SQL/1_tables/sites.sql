@@ -3,6 +3,7 @@ CREATE TABLE `sites` (
   `siteName` varchar(255) NOT NULL,
   `siteTitle` varchar(255) NOT NULL,
   `uuid` VARCHAR(36) NOT NULL,
+  `views` INT(11) NOT NULL DEFAULT 0,
   `deleted` ENUM('Yes','No') DEFAULT 'No'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

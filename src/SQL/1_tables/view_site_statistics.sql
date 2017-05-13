@@ -1,4 +1,4 @@
-CREATE TABLE view_site_statistics
+CREATE TABLE viewSiteStatistics
 (
   id INT PRIMARY KEY AUTO_INCREMENT,
   siteId INT,
