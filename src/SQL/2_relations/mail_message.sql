@@ -1,0 +1,12 @@
+ALTER TABLE `mailMessage`
+  ADD FOREIGN KEY (`mailAccountId`)
+REFERENCES `mailAccount`(`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+
+ALTER TABLE `mailMessage`
+  ADD FOREIGN KEY (`contactId`)
+REFERENCES `mailContacts` (`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;

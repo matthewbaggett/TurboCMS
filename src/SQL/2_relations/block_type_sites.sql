@@ -1,0 +1,11 @@
+ALTER TABLE `blockTypeSites`
+  ADD FOREIGN KEY (`blockTypeId`)
+REFERENCES `blockTypes`(`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `blockTypeSites`
+  ADD FOREIGN KEY (`siteId`)
+REFERENCES `sites`(`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
