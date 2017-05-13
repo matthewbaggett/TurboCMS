@@ -13,6 +13,7 @@ use Slim;
 use Slim\Views\Twig;
 use Symfony\Component\Yaml\Yaml;
 use TurboCMS\Mail\MailFetch;
+use TurboCMS\Middleware\VisitorTrackingMiddleware;
 
 class TurboCMS extends App
 {
@@ -66,6 +67,12 @@ class TurboCMS extends App
             return new MailFetch($container->get(MailAccountService::class));
         };
 
+        $this->container['Cookies'] = function (Slim\Container $container){
+            /** @var Slim\Http\Request $request */
+            $request = $container->get("request");
+            return new Slim\Http\Cookies($request->getCookieParams());
+        };
+
         $this->container->get(AutoImporterService::class)
             ->addSqlPath(TURBO_ROOT . "/src/SQL");
 
@@ -84,6 +91,9 @@ class TurboCMS extends App
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
         }
+
+        $this->app->add(new VisitorTrackingMiddleware());
+
     }
 
     protected function setUp()
