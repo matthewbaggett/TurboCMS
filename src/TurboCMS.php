@@ -3,12 +3,12 @@
 namespace TurboCMS;
 
 use \Segura\AppCore\App;
-use Segura\AppCore\Services\AutoImporterService;
 use \Segura\Session\Session;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use MicroSites\Services\MailAccountService;
 use Monolog\Logger;
+use Segura\AppCore\Services\AutoImporterService;
 use Slim;
 use Slim\Views\Twig;
 use Symfony\Component\Yaml\Yaml;
@@ -74,7 +74,7 @@ class TurboCMS extends App
                 if (file_exists($site->getRealPath() . "/AppContainer.php")) {
                     require($site->getRealPath() . "/AppContainer.php");
                 }
-                if(file_exists($site->getRealPath() . "/SQL")){
+                if (file_exists($site->getRealPath() . "/SQL")) {
                     $this->container->get(AutoImporterService::class)
                         ->addSqlPath($site->getRealPath() . "/SQL");
                 }
