@@ -223,6 +223,16 @@ class TurboCMS extends App
         }
     }
 
+    public function getSiteByName($name){
+        /** @var SitesService $siteService */
+        $siteService = $this->getContainer()->get(SitesService::class);
+        try {
+            return $siteService->getByField(SitesModel::FIELD_SITENAME, $name);
+        }catch(\Exception $exception){
+            return null;
+        }
+    }
+
     /**
      * @return array
      */
