@@ -2,6 +2,10 @@
 
 namespace TurboCMS;
 
+use MicroSites\Models\SitesModel;
+use MicroSites\Models\SitesSettingsModel;
+use MicroSites\Services\SitesService;
+use MicroSites\Services\SitesSettingsService;
 use \Segura\AppCore\App;
 use \Segura\Session\Session;
 use League\Flysystem\Adapter\Local;
@@ -15,6 +19,7 @@ use Symfony\Component\Yaml\Yaml;
 use TurboCMS\Mail\MailFetch;
 use TurboCMS\Middleware\VisitorTrackingMiddleware;
 use TurboCMS\Services\GeoIPLookup;
+use Zend\Db\Sql\Where;
 
 class TurboCMS extends App
 {
@@ -36,10 +41,9 @@ class TurboCMS extends App
         $this->addViewPath(TURBO_ROOT . "/src/Views");
         /** @var Twig $twig */
         $twig = $this->getContainer()->get("view");
-        if (isset($this->micrositeConfig['constants']) && count($this->micrositeConfig['constants']) > 0) {
-            foreach ($this->micrositeConfig['constants'] as $constant => $value) {
-                $twig->offsetSet($constant, $value);
-            }
+
+        foreach ($this->getCurrentSiteConstants() as $constant => $value) {
+            $twig->offsetSet($constant, $value);
         }
 
         $this->container[Session::class] = function (Slim\Container $container) {
@@ -204,6 +208,20 @@ class TurboCMS extends App
     }
 
     /**
+     * @return SitesModel|null
+     */
+    public function getCurrentSite() //: ?SitesModel
+    {
+        /** @var SitesService $siteService */
+        $siteService = $this->getContainer()->get(SitesService::class);
+        try {
+            return $siteService->getByField(SitesModel::FIELD_SITENAME, $this->getCurrentSiteName());
+        }catch(\Exception $exception){
+            return null;
+        }
+    }
+
+    /**
      * @return array
      */
     public function getSiteConfigs(): array
@@ -224,6 +242,36 @@ class TurboCMS extends App
     public function getCurrentSiteConfig(): array
     {
         return $this->micrositeConfig;
+    }
+
+    public function getCurrentSiteConstants(): array
+    {
+        $site = $this->getCurrentSite();
+        $constants = [];
+        if(isset($this->getCurrentSiteConfig()['constants'])){
+            $constants = array_merge($constants, $this->getCurrentSiteConfig()['constants']);
+        }
+        /** @var SitesSettingsService $siteSettingService */
+        $siteSettingService = $this->getContainer()->get(SitesSettingsService::class);
+        if($site) {
+            $siteSettings = $siteSettingService->getAll(
+                null,
+                null,
+                [
+                    function (Where $where) use ($site) {
+                        $where->equalTo(SitesSettingsModel::FIELD_SITEID, $site->getId());
+                    }
+                ]
+            );
+            foreach ($siteSettings as $siteSetting) {
+                if (substr($siteSetting->getKey(), -2, 2) == '[]') {
+                    $constants[substr($siteSetting->getKey(),0,-2)][] = $siteSetting->getValue();
+                } else {
+                    $constants[$siteSetting->getKey()] = $siteSetting->getValue();
+                }
+            }
+        }
+        return $constants;
     }
 
     /**

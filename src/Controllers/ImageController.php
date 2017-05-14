@@ -13,7 +13,6 @@ use Segura\AppCore\Abstracts\Controller;
 use Segura\AppCore\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use TurboCMS\TurboCMS;
 
 class ImageController extends Controller
 {
@@ -82,9 +81,9 @@ class ImageController extends Controller
                         $sizeBits = explode("x", $args['size'], 3);
                         $size     = new Image\Box($sizeBits[0], $sizeBits[1]);
 
-                        if(isset($sizeBits[2]) && $sizeBits[2] == 'fill') {
+                        if (isset($sizeBits[2]) && $sizeBits[2] == 'fill') {
                             $mode = Image\ImageInterface::THUMBNAIL_OUTBOUND;
-                        }else{
+                        } else {
                             $mode = Image\ImageInterface::THUMBNAIL_INSET;
                         }
                     }
