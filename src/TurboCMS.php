@@ -2,11 +2,14 @@
 
 namespace TurboCMS;
 
+use MicroSites\Models\SitesDomainsModel;
 use MicroSites\Models\SitesModel;
 use MicroSites\Models\SitesSettingsModel;
+use MicroSites\Services\SitesDomainsService;
 use MicroSites\Services\SitesService;
 use MicroSites\Services\SitesSettingsService;
 use \Segura\AppCore\App;
+use Segura\AppCore\Exceptions\TableGatewayException;
 use \Segura\Session\Session;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -30,8 +33,9 @@ class TurboCMS extends App
 
     public function __construct()
     {
-        $this->setUp();
         parent::__construct();
+        $this->setUp_determineMicrosite();
+        $this->setUp_initialiseMicrosite();
 
         foreach (new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
             if (!$file->isDot() && $file->getExtension() == 'php') {
@@ -76,6 +80,8 @@ class TurboCMS extends App
             return new GeoIPLookup();
         };
 
+
+
         $this->container->get(AutoImporterService::class)
             ->addSqlPath(TURBO_ROOT . "/src/SQL");
 
@@ -98,27 +104,6 @@ class TurboCMS extends App
         $this->app->add(new VisitorTrackingMiddleware());
     }
 
-    protected function setUp()
-    {
-        $this->setUp_parseMicroSites();
-        $this->setUp_determineMicrosite();
-        $this->setUp_initialiseMicrosite();
-    }
-
-    protected function setUp_parseMicroSites()
-    {
-        $configsToParse = [];
-        foreach (new \DirectoryIterator(APP_ROOT . "/sites") as $site) {
-            if ($site->isDir() && file_exists($site->getRealPath() . "/config.yml")) {
-                $configsToParse[$site->getFilename()] = $site->getRealPath() . "/config.yml";
-            }
-        }
-
-        foreach ($configsToParse as $site => $configPath) {
-            $this->siteConfigs[$site] = Yaml::parse(file_get_contents($configPath));
-        }
-    }
-
     protected function setUp_determineMicrosite()
     {
         if (php_sapi_name() == 'cli') {
@@ -130,12 +115,29 @@ class TurboCMS extends App
                 $serverName = $_SERVER['SERVER_NAME'];
             }
         }
-        foreach ($this->siteConfigs as $site => $config) {
+
+        $container = $this->getContainer();
+        /** @var SitesDomainsService $domainService */
+        $domainService = $container->get(SitesDomainsService::class);
+        /** @var SitesService $sitesService */
+        $sitesService = $container->get(SitesService::class);
+        try {
+            $siteDomain = $domainService->getByField(SitesDomainsModel::FIELD_DOMAIN, $serverName);
+            $this->micrositeSelected = $sitesService->getById($siteDomain->getSiteId())->getSiteName();
+            $this->micrositeConfig = [];
+
+        }catch(TableGatewayException $tableGatewayException){
+
+        }
+
+        /*foreach ($this->siteConfigs as $site => $config) {
             if (in_array($serverName, $config['domains'])) {
                 $this->micrositeSelected = $site;
                 $this->micrositeConfig   = $config;
             }
-        }
+        }*/
+
+
         if ($this->micrositeSelected === false && php_sapi_name() != 'cli') {
             die("No microsite configured for domain \"{$serverName}\".\n\n");
         }
