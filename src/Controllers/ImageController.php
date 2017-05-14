@@ -73,6 +73,10 @@ class ImageController extends Controller
                     $size = $image->getSize();
                     $mode = Image\ImageInterface::THUMBNAIL_INSET;
                     break;
+                case 'original':
+                    $size = $image->getSize();
+                    $mode = Image\ImageInterface::THUMBNAIL_INSET;
+                    break;
                 default:
                     if (count(explode("x", $args['size'], 2)) == 2) {
                         $sizeBits = explode("x", $args['size'], 3);
