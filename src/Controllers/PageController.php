@@ -61,11 +61,12 @@ class PageController extends Controller
 
         /** @var Twig $twig */
         $twig = App::Container()->get("view");
-
+        $site = $page->fetchSiteObject();
 
         return $twig->render($response, $page->getPageTypeId() ? $page->fetchPageTypeObject()->getTemplate() : 'Pages/Default.html.twig', [
-            'site'      => $page->fetchSiteObject(),
+            'site'      => $site,
             'page_name' => $page->getTitle(),
+            'page'      => $page,
             'blocks'    => $blocks,
         ]);
     }
