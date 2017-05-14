@@ -1,9 +1,9 @@
 -- Default Page Types
 REPLACE INTO pageTypes (name, template, description) VALUES
-  ('standard', 'standard.twig.html', 'A standard page.'),
-  ('blog-post', 'blog-post.twig.html', 'A common or garden variety of blog post.'),
-  ('gallery', 'gallery.twig.html','An image gallery.'),
-  ('slide-show', 'side-show.twig.html','A slideshow to show off some images in sequential form.');
+  ('standard', 'standard.html.twig', 'A standard page.'),
+  ('blog-post', 'blog-post.html.twig', 'A common or garden variety of blog post.'),
+  ('gallery', 'gallery.html.twig','An image gallery.'),
+  ('slide-show', 'side-show.html.twig','A slideshow to show off some images in sequential form.');
 
 -- Default Block Types
 REPLACE INTO blockTypes (name, description) VALUES
