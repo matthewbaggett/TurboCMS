@@ -8,7 +8,7 @@ CREATE TABLE `pageTypes` (
 
 ALTER TABLE `pageTypes`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name` (`name`),
+  ADD UNIQUE KEY `nameAndSite` (`name`, `siteId`),
   ADD KEY `siteId` (`siteId`);
 
 ALTER TABLE `pageTypes`
