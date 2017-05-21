@@ -81,7 +81,7 @@ class ImageController extends Controller
                         $sizeBits = explode("x", $args['size'], 3);
 
                         #!\Kint::dump($sizeBits);
-                        $width = $sizeBits[0] ? $sizeBits[0] : 999999;
+                        $width  = $sizeBits[0] ? $sizeBits[0] : 999999;
                         $height = $sizeBits[1] ? $sizeBits[1] : 999999;
 
                         #!\Kint::dump($width, $height);
