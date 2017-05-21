@@ -1,0 +1,8 @@
+{% extends "Layout/Layout.html.twig" %}
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+    {% for block in blocks %}
+        {% include "Blocks/_block.html.twig" %}
+    {% endfor %}
+{% endblock %}
