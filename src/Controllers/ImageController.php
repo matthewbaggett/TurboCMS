@@ -79,7 +79,15 @@ class ImageController extends Controller
                 default:
                     if (count(explode("x", $args['size'], 2)) == 2) {
                         $sizeBits = explode("x", $args['size'], 3);
-                        $size     = new Image\Box($sizeBits[0], $sizeBits[1]);
+
+                        #!\Kint::dump($sizeBits);
+                        $width = $sizeBits[0] ? $sizeBits[0] : 999999;
+                        $height = $sizeBits[1] ? $sizeBits[1] : 999999;
+
+                        #!\Kint::dump($width, $height);
+                        #exit;
+
+                        $size     = new Image\Box($width, $height);
 
                         if (isset($sizeBits[2]) && $sizeBits[2] == 'fill') {
                             $mode = Image\ImageInterface::THUMBNAIL_OUTBOUND;
