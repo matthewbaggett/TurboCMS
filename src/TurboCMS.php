@@ -2,23 +2,22 @@
 
 namespace TurboCMS;
 
-use MicroSites\Models\SitesDomainsModel;
-use MicroSites\Models\SitesModel;
-use MicroSites\Models\SitesSettingsModel;
-use MicroSites\Services\SitesDomainsService;
-use MicroSites\Services\SitesService;
-use MicroSites\Services\SitesSettingsService;
 use \Segura\AppCore\App;
-use Segura\AppCore\Exceptions\TableGatewayException;
 use \Segura\Session\Session;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use MicroSites\Models\SitesDomainsModel;
+use MicroSites\Models\SitesModel;
+use MicroSites\Models\SitesSettingsModel;
 use MicroSites\Services\MailAccountService;
+use MicroSites\Services\SitesDomainsService;
+use MicroSites\Services\SitesService;
+use MicroSites\Services\SitesSettingsService;
 use Monolog\Logger;
+use Segura\AppCore\Exceptions\TableGatewayException;
 use Segura\AppCore\Services\AutoImporterService;
 use Slim;
 use Slim\Views\Twig;
-use Symfony\Component\Yaml\Yaml;
 use TurboCMS\Mail\MailFetch;
 use TurboCMS\Middleware\VisitorTrackingMiddleware;
 use TurboCMS\Services\GeoIPLookup;
@@ -122,12 +121,10 @@ class TurboCMS extends App
         /** @var SitesService $sitesService */
         $sitesService = $container->get(SitesService::class);
         try {
-            $siteDomain = $domainService->getByField(SitesDomainsModel::FIELD_DOMAIN, $serverName);
+            $siteDomain              = $domainService->getByField(SitesDomainsModel::FIELD_DOMAIN, $serverName);
             $this->micrositeSelected = $sitesService->getById($siteDomain->getSiteId())->getSiteName();
-            $this->micrositeConfig = [];
-
-        }catch(TableGatewayException $tableGatewayException){
-
+            $this->micrositeConfig   = [];
+        } catch (TableGatewayException $tableGatewayException) {
         }
 
         /*foreach ($this->siteConfigs as $site => $config) {
@@ -218,17 +215,18 @@ class TurboCMS extends App
         $siteService = $this->getContainer()->get(SitesService::class);
         try {
             return $siteService->getByField(SitesModel::FIELD_SITENAME, $this->getCurrentSiteName());
-        }catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return null;
         }
     }
 
-    public function getSiteByName($name){
+    public function getSiteByName($name)
+    {
         /** @var SitesService $siteService */
         $siteService = $this->getContainer()->get(SitesService::class);
         try {
             return $siteService->getByField(SitesModel::FIELD_SITENAME, $name);
-        }catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return null;
         }
     }
@@ -258,14 +256,14 @@ class TurboCMS extends App
 
     public function getCurrentSiteConstants(): array
     {
-        $site = $this->getCurrentSite();
+        $site      = $this->getCurrentSite();
         $constants = [];
-        if(isset($this->getCurrentSiteConfig()['constants'])){
+        if (isset($this->getCurrentSiteConfig()['constants'])) {
             $constants = array_merge($constants, $this->getCurrentSiteConfig()['constants']);
         }
         /** @var SitesSettingsService $siteSettingService */
         $siteSettingService = $this->getContainer()->get(SitesSettingsService::class);
-        if($site) {
+        if ($site) {
             $siteSettings = $siteSettingService->getAll(
                 null,
                 null,
@@ -277,7 +275,7 @@ class TurboCMS extends App
             );
             foreach ($siteSettings as $siteSetting) {
                 if (substr($siteSetting->getKey(), -2, 2) == '[]') {
-                    $constants[substr($siteSetting->getKey(),0,-2)][] = $siteSetting->getValue();
+                    $constants[substr($siteSetting->getKey(), 0, -2)][] = $siteSetting->getValue();
                 } else {
                     $constants[$siteSetting->getKey()] = $siteSetting->getValue();
                 }
