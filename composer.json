@@ -4,6 +4,7 @@
   "require": {
     "php": "^7.0",
     "segura/appcore": "dev-master",
+    "slim/http-cache": "^0.3.0",
     "imagine/imagine": "^0.6.3",
     "pekkis/mime-types": "^1.0",
     "league/flysystem": "^1.0",

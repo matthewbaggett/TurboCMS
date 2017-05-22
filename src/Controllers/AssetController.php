@@ -33,11 +33,10 @@ class AssetController extends Controller
 
             $mimeTypes      = new MimeTypes();
             $assetExtension = pathinfo($assetPath, PATHINFO_EXTENSION);
-
             $detectedMimeType = $mimeTypes->extensionToMimeType($assetExtension);
             $response         = $response->withHeader('Content-Type', $detectedMimeType . ';charset=utf-8');
             $response = $cache->allowCache($response, 'public');
-            $response = $cache->withExpires($response, "+1 day");
+            $response = $cache->withExpires($response, "+60 days");
             $response = $cache->withEtag($response, crc32($request->getUri()));
             //!\Kint::dump($response->getHeaders());exit;
             return $response;
