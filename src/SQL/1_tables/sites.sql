@@ -7,6 +7,7 @@ CREATE TABLE `sites` (
   `maxPages` INT(11) NOT NULL DEFAULT 100,
   `maxDiskUsageMegaBytes` INT(11) NOT NULL DEFAULT 100,
   `maxBandwidthUsageMegaBytes` INT(11) NOT NULL DEFAULT 100,
+  `bandwidthUsedBytes` INT(11) NOT NULL DEFAULT 0,
   `deleted` ENUM('Yes','No') DEFAULT 'No'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

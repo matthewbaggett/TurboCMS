@@ -19,6 +19,7 @@ use Segura\AppCore\Services\AutoImporterService;
 use Slim;
 use Slim\Views\Twig;
 use TurboCMS\Mail\MailFetch;
+use TurboCMS\Middleware\BandwidthTrackingMiddleware;
 use TurboCMS\Middleware\VisitorTrackingMiddleware;
 use TurboCMS\Services\GeoIPLookup;
 use Zend\Db\Sql\Where;
@@ -96,11 +97,23 @@ class TurboCMS extends App
             }
         }
 
+        $this->container[VisitorTrackingMiddleware::class] = function (Slim\Container $container) {
+            return new VisitorTrackingMiddleware();
+        };
+
+        $this->container[BandwidthTrackingMiddleware::class] = function (Slim\Container $container) {
+            return new BandwidthTrackingMiddleware(
+                $container->get("Redis"),
+                $container->get(SitesService::class)
+            );
+        };
+
+        $this->app->add($this->container->get(VisitorTrackingMiddleware::class));
+        $this->app->add($this->container->get(BandwidthTrackingMiddleware::class));
+
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
         }
-
-        $this->app->add(new VisitorTrackingMiddleware());
     }
 
     protected function setUp_determineMicrosite()
