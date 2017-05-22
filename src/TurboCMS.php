@@ -34,8 +34,10 @@ class TurboCMS extends App
     public function __construct()
     {
         parent::__construct();
-        $this->setUp_determineMicrosite();
-        $this->setUp_initialiseMicrosite();
+        if (php_sapi_name() != 'cli') {
+            $this->setUp_determineMicrosite();
+            $this->setUp_initialiseMicrosite();
+        }
 
         foreach (new \DirectoryIterator(TURBO_ROOT . "/src/Routes") as $file) {
             if (!$file->isDot() && $file->getExtension() == 'php') {
@@ -49,6 +51,10 @@ class TurboCMS extends App
         foreach ($this->getCurrentSiteConstants() as $constant => $value) {
             $twig->offsetSet($constant, $value);
         }
+
+        $this->container['cache'] = function(){
+            return new Slim\HttpCache\CacheProvider();
+        };
 
         $this->container[Session::class] = function (Slim\Container $container) {
             return Session::start($container->get('Redis'));
@@ -80,8 +86,6 @@ class TurboCMS extends App
             return new GeoIPLookup();
         };
 
-
-
         $this->container->get(AutoImporterService::class)
             ->addSqlPath(TURBO_ROOT . "/src/SQL");
 
@@ -108,8 +112,9 @@ class TurboCMS extends App
             );
         };
 
-        $this->app->add($this->container->get(VisitorTrackingMiddleware::class));
-        $this->app->add($this->container->get(BandwidthTrackingMiddleware::class));
+//        $this->app->add($this->container->get(VisitorTrackingMiddleware::class));
+//        $this->app->add($this->container->get(BandwidthTrackingMiddleware::class));
+//        $this->app->add(new Slim\HttpCache\Cache('public', 86400));
 
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
