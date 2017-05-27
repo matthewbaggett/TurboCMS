@@ -7,7 +7,7 @@ use Dflydev\FigCookies;
 use MicroSites\Models\SitesModel;
 use MicroSites\Services\SitesService;
 use Slim\Http;
-use Thru\UUID\UUID;
+use Gone\UUID\UUID;
 use TurboCMS\TurboCMS;
 
 class VisitorTrackingMiddleware

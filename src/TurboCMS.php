@@ -2,6 +2,8 @@
 
 namespace TurboCMS;
 
+use Gone\Twig\GravatarExtension;
+use Gone\Twig\InflectExtension;
 use \Segura\AppCore\App;
 use \Segura\Session\Session;
 use League\Flysystem\Adapter\Local;
@@ -56,10 +58,6 @@ class TurboCMS extends App
             return new Slim\HttpCache\CacheProvider();
         };
 
-        $this->container[Session::class] = function (Slim\Container $container) {
-            return Session::start($container->get('Redis'));
-        };
-
         $this->container['Storage'] = function (Slim\Container $container) {
             $storagePath = SITE_ROOT . "/Storage";
             if (!file_exists($storagePath)) {
@@ -112,9 +110,12 @@ class TurboCMS extends App
             );
         };
 
-//        $this->app->add($this->container->get(VisitorTrackingMiddleware::class));
-//        $this->app->add($this->container->get(BandwidthTrackingMiddleware::class));
+        $this->app->add($this->container->get(VisitorTrackingMiddleware::class));
+        $this->app->add($this->container->get(BandwidthTrackingMiddleware::class));
 //        $this->app->add(new Slim\HttpCache\Cache('public', 86400));
+        //$twig = $this->getContainer()->get('view');
+        $twig->addExtension(new InflectExtension());
+        $twig->addExtension(new GravatarExtension());
 
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
