@@ -16,6 +16,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
 use TurboCMS\TurboCMS;
+use Zend\Db\Sql\Where;
 
 class PageController extends Controller
 {
@@ -42,9 +43,22 @@ class PageController extends Controller
     }
     public function getPage(Request $request, Response $response, $args)
     {
+        $site = TurboCMS::Instance()->getCurrentSite();
         try {
-            // @TODO: This will allow other sites to view the same page.. Whoops! Fixme!
-            $page = $this->pageService->getByField(PagesModel::FIELD_URLSLUG, $args['page_slug']);
+            if(isset($args['page_slug'])){
+                $pageSlug = $args['page_slug'];
+            }else{
+                $pageSlug = '';
+            }
+            $pages = $this->pageService->getAll(1, 0, [
+                function (Where $where) use ($pageSlug) {
+                    $where->equalTo(PagesModel::FIELD_URLSLUG, $pageSlug);
+                },
+                function (Where $where) use ($site) {
+                    $where->equalTo(PagesModel::FIELD_SITEID, $site->getId());
+                }
+            ]);
+            $page = reset($pages);
             $this->pageService->trackView($page);
             return $this->renderPage($page, $response);
         } catch (TableGatewayRecordNotFoundException $tgrnfe) {
