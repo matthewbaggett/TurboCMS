@@ -2,10 +2,10 @@
 
 namespace TurboCMS;
 
-use Gone\Twig\GravatarExtension;
-use Gone\Twig\InflectExtension;
 use \Segura\AppCore\App;
 use \Segura\Session\Session;
+use Gone\Twig\GravatarExtension;
+use Gone\Twig\InflectExtension;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use MicroSites\Models\SitesDomainsModel;
@@ -54,7 +54,7 @@ class TurboCMS extends App
             $twig->offsetSet($constant, $value);
         }
 
-        $this->container['cache'] = function(){
+        $this->container['cache'] = function () {
             return new Slim\HttpCache\CacheProvider();
         };
 

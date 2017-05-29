@@ -4,10 +4,10 @@ namespace TurboCMS\Middleware;
 
 use Dflydev\FigCookies;
 
+use Gone\UUID\UUID;
 use MicroSites\Models\SitesModel;
 use MicroSites\Services\SitesService;
 use Slim\Http;
-use Gone\UUID\UUID;
 use TurboCMS\TurboCMS;
 
 class VisitorTrackingMiddleware

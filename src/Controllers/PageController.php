@@ -45,9 +45,9 @@ class PageController extends Controller
     {
         $site = TurboCMS::Instance()->getCurrentSite();
         try {
-            if(isset($args['page_slug'])){
+            if (isset($args['page_slug'])) {
                 $pageSlug = $args['page_slug'];
-            }else{
+            } else {
                 $pageSlug = '';
             }
             $pages = $this->pageService->getAll(1, 0, [
@@ -62,13 +62,15 @@ class PageController extends Controller
             $this->pageService->trackView($page);
             return $this->renderPage($page, $response);
         } catch (TableGatewayRecordNotFoundException $tgrnfe) {
+            error_log("Cannot find page where Slug is \"{$pageSlug}\" in site {$site->getSiteName()}");
             return $response->withStatus(404);
         }
     }
 
     public function renderPage(PagesModel $page, Response $response)
     {
-        if (!$page->isPublished() && !$this->canPreview($page)) {
+        if (!($page->isPublished() || $this->canPreview($page))) {
+            error_log("Cannot load page \"{$page->getUrlSlug()}\" because it is not published. Site={$page->fetchSiteObject()->getSiteName()}, Status={$page->getStatus()}, DatePublished={$page->getPublishedDate()}, CanPreview=".var_export($this->canPreview($page), true));
             return $response->withStatus(404);
         }
         $blocks = $page->fetchRenderableBlockObjects();
@@ -78,10 +80,11 @@ class PageController extends Controller
         $site = $page->fetchSiteObject();
 
         return $twig->render($response, $page->getPageTypeId() ? $page->fetchPageTypeObject()->getTemplate() : 'Pages/Default.html.twig', [
-            'site'      => $site,
-            'page_name' => $page->getTitle(),
-            'page'      => $page,
-            'blocks'    => $blocks,
+            'site'       => $site,
+            'page_name'  => $page->getTitle(),
+            'page'       => $page,
+            'blocks'     => $blocks,
+            'navigation' => $site->getNavigations(),
         ]);
     }
 

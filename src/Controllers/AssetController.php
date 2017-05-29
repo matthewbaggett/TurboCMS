@@ -13,7 +13,6 @@ use TurboCMS\TurboCMS;
 
 class AssetController extends Controller
 {
-
     public function getAsset(Request $request, Response $response, $args)
     {
         /** @var $cache CacheProvider */
@@ -31,13 +30,13 @@ class AssetController extends Controller
             $response = $response->withBody(new Body(fopen('php://temp', 'r+')));
             $response->getBody()->write(file_get_contents($assetPath));
 
-            $mimeTypes      = new MimeTypes();
-            $assetExtension = pathinfo($assetPath, PATHINFO_EXTENSION);
+            $mimeTypes        = new MimeTypes();
+            $assetExtension   = pathinfo($assetPath, PATHINFO_EXTENSION);
             $detectedMimeType = $mimeTypes->extensionToMimeType($assetExtension);
             $response         = $response->withHeader('Content-Type', $detectedMimeType . ';charset=utf-8');
-            $response = $cache->allowCache($response, 'public');
-            $response = $cache->withExpires($response, "+60 days");
-            $response = $cache->withEtag($response, crc32($request->getUri()));
+            $response         = $cache->allowCache($response, 'public');
+            $response         = $cache->withExpires($response, "+60 days");
+            $response         = $cache->withEtag($response, crc32($request->getUri()));
             //!\Kint::dump($response->getHeaders());exit;
             return $response;
         } else {
