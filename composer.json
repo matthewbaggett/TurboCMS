@@ -13,7 +13,11 @@
     "tedivm/fetch": "^0.7.0",
     "miljar/php-exif": "^0.6.3",
     "phpexiftool/exiftool": "^10.16",
-    "dflydev/fig-cookies": "^1.0.2"
+    "dflydev/fig-cookies": "^1.0.2",
+    "kint-php/kint-twig": "^1.0",
+    "gone.io/twig-extension-gravatar": "dev-master",
+    "gone.io/twig-extension-inflect": "^1.0",
+    "gone.io/twig-extension-transform": "^1.0"
   },
   "bin": [
     "bin/mail-fetch"

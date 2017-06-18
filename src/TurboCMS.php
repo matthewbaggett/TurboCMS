@@ -112,10 +112,11 @@ class TurboCMS extends App
 
         $this->app->add($this->container->get(VisitorTrackingMiddleware::class));
         $this->app->add($this->container->get(BandwidthTrackingMiddleware::class));
-//        $this->app->add(new Slim\HttpCache\Cache('public', 86400));
-        //$twig = $this->getContainer()->get('view');
+        //$this->app->add(new Slim\HttpCache\Cache('public', 86400));
+
         $twig->addExtension(new InflectExtension());
         $twig->addExtension(new GravatarExtension());
+        $twig->addExtension(new \Kint_TwigExtension());
 
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
