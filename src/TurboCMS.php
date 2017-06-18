@@ -3,6 +3,7 @@
 namespace TurboCMS;
 
 use \Segura\AppCore\App;
+use Segura\AppCore\Twig\Extensions\ArrayValuesTwigExtension;
 use \Segura\Session\Session;
 use Gone\Twig\GravatarExtension;
 use Gone\Twig\InflectExtension;
@@ -24,6 +25,7 @@ use TurboCMS\Mail\MailFetch;
 use TurboCMS\Middleware\BandwidthTrackingMiddleware;
 use TurboCMS\Middleware\VisitorTrackingMiddleware;
 use TurboCMS\Services\GeoIPLookup;
+use TurboCMS\Twig\TwigArrayValuesExtension;
 use Zend\Db\Sql\Where;
 
 class TurboCMS extends App
@@ -117,6 +119,7 @@ class TurboCMS extends App
         $twig->addExtension(new InflectExtension());
         $twig->addExtension(new GravatarExtension());
         $twig->addExtension(new \Kint_TwigExtension());
+        $twig->addExtension(new ArrayValuesTwigExtension());
 
         if (php_sapi_name() != 'cli') {
             $session = $this->getContainer()->get(Session::class);
