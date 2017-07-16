@@ -7,7 +7,8 @@ REPLACE INTO pageTypes (name, template, description) VALUES
 
 -- Default Block Types
 REPLACE INTO blockTypes (name, description) VALUES
-  ( 'Text', 'A block with paragraphs of text, with an optional Title.'),
-  ( 'Image', 'An Image block, with Alt Text.'),
-  ( 'Video', 'A YouTube video.'),
+  ('Text', 'A block with paragraphs of text, with an optional Title.'),
+  ('Image', 'An Image block, with Alt Text.'),
+  ('Video', 'A YouTube video.'),
+  ('Map', 'A map'),
   ('Sub Page', 'Another page embedded into this one.');
