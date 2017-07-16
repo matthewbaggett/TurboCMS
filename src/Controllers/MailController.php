@@ -34,5 +34,7 @@ class MailController extends PublicController
             ->save();
 
         $this->customerMessageService->send($customerMessage);
+
+        return $response->withRedirect($request->getServerParam('HTTP_REFERER'));
     }
 }
