@@ -11,4 +11,5 @@ REPLACE INTO blockTypes (name, description) VALUES
   ('Image', 'An Image block, with Alt Text.'),
   ('Video', 'A YouTube video.'),
   ('Map', 'A map'),
+  ('Link', 'A simple link with a label'),
   ('Sub Page', 'Another page embedded into this one.');
