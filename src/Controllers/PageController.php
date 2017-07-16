@@ -50,15 +50,12 @@ class PageController extends Controller
             } else {
                 $pageSlug = '';
             }
-            $pages = $this->pageService->getAll(1, 0, [
-                function (Where $where) use ($pageSlug) {
-                    $where->equalTo(PagesModel::FIELD_URLSLUG, $pageSlug);
-                },
-                function (Where $where) use ($site) {
-                    $where->equalTo(PagesModel::FIELD_SITEID, $site->getId());
-                }
+
+            $page = $this->pageService->getMatching([
+                PagesModel::FIELD_URLSLUG => $pageSlug,
+                PagesModel::FIELD_SITEID => $site->getId(),
             ]);
-            $page = reset($pages);
+
             $this->pageService->trackView($page);
             return $this->renderPage($page, $response);
         } catch (TableGatewayRecordNotFoundException $tgrnfe) {
