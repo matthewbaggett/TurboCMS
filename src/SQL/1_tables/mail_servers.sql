@@ -2,7 +2,8 @@ CREATE TABLE mailServers
 (
   id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   siteId INT(11) NOT NULL,
-  userId INT(11),
+  userId INT(11) NOT NULL,
+  direction ENUM('In','Out') NOT NULL DEFAULT 'In',
   name VARCHAR(255) NOT NULL,
   host TEXT NOT NULL,
   port INT(11) NOT NULL

@@ -3,7 +3,6 @@
 namespace TurboCMS;
 
 use \Segura\AppCore\App;
-use Segura\AppCore\Twig\Extensions\ArrayValuesTwigExtension;
 use \Segura\Session\Session;
 use Gone\Twig\GravatarExtension;
 use Gone\Twig\InflectExtension;
@@ -19,13 +18,13 @@ use MicroSites\Services\SitesSettingsService;
 use Monolog\Logger;
 use Segura\AppCore\Exceptions\TableGatewayException;
 use Segura\AppCore\Services\AutoImporterService;
+use Segura\AppCore\Twig\Extensions\ArrayValuesTwigExtension;
 use Slim;
 use Slim\Views\Twig;
 use TurboCMS\Mail\MailFetch;
 use TurboCMS\Middleware\BandwidthTrackingMiddleware;
 use TurboCMS\Middleware\VisitorTrackingMiddleware;
 use TurboCMS\Services\GeoIPLookup;
-use TurboCMS\Twig\TwigArrayValuesExtension;
 use Zend\Db\Sql\Where;
 
 class TurboCMS extends App
