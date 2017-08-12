@@ -64,6 +64,7 @@ class ImageController extends Controller
             $image   = $imagine->open($tempFilePath);
 
             switch ($args['size']) {
+
                 case 'thumb':
                     $size = new Image\Box(250, 250);
                     $mode = Image\ImageInterface::THUMBNAIL_INSET;
@@ -75,6 +76,10 @@ class ImageController extends Controller
                 case 'original':
                     $size = $image->getSize();
                     $mode = Image\ImageInterface::THUMBNAIL_INSET;
+                    break;
+                case 'outbound':
+                    $size = $image->getSize();
+                    $mode = Image\ImageInterface::THUMBNAIL_OUTBOUND;
                     break;
                 default:
                     if (count(explode("x", $args['size'], 2)) == 2) {

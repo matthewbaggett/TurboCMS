@@ -1,0 +1,10 @@
+<img
+    {% if Image.File %}
+        src="/image/{{ Width }}x{{ Height }}x{{ Mode|lower }}/{{ Image.File }}"
+    {% elseif Image.URL %}
+        src="{{ Image.URL }}"
+    {% endif %}
+    class="img-responsive"
+    alt="{{ Image.AltText }}"
+    title="{{ Image.AltText }}"
+/>
